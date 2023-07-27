@@ -137,14 +137,39 @@ function(input, output, session) {
                        "Climate Extremes", "Climate Refugia", "Climate Velocity",
                        "Connectivity", "Freshwater Provision", 
                        "Forest Landcover", "Grassland", "Wetland",
-                       "Human Footprint Index"),
-        options = layersControlOptions(collapsed = FALSE))
+                       "Human Footprint Index", "Off"),
+        options = layersControlOptions(collapsed = FALSE)) %>%
+      htmlwidgets::onRender("
+      function(el, x) {
+        var myMap = this;
+        myMap.on('baselayerchange',
+          function (e) {
+            Shiny.onInputChange('RI_MAP_tile', e.layer.groupname)
+        })
+    }")
       
+  })
+  
+  # update map with themes
+  observeEvent(input$RI_MAP_tile, {
+    
+    if (!base_group_cache[[input$RI_MAP_tile]][1][[1]]) {
+      # update variable to TRUE
+      base_group_cache[[input$RI_MAP_tile]][1][[1]] <<- TRUE
+      # update map
+      leafletProxy("RI_MAP") %>%
+      addRasterImage(
+           raster(RI_READY[[base_group_cache[[input$RI_MAP_tile]][2][[1]]]]),
+           colors = base_group_cache[[input$RI_MAP_tile]][3][[1]],
+           group = input$RI_MAP_tile) %>%
+         showGroup(input$RI_MAP_tile)
+    }
+    
   })
   
   # RI equation
   observeEvent(input$ri_update, {
-
+    
   RI <- (
      (RI_READY$W_Carbon_potential  * input$carbon_p) # carbon potential
     + (RI_READY$W_Carbon_storage * input$carbon_s)  # + carbon storage

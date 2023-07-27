@@ -77,3 +77,34 @@ normalize_between_0_and_1 <- function(rast) {
   normalized_data <- round(normalized_data, 2) # round to 2 decimal places
   return(normalized_data)
 }
+
+# Layer cache
+base_group_cache <- list(
+  (`Resilience Index` = c(TRUE, 1, RI_pal)),
+  (`Critical Habitat` = c(FALSE, 3, ch_pal)), 
+  (`Range Map: Endangered` = c(FALSE, 8, sar_pal)),
+  (`Range Map: Special Concern` = c(FALSE, 15, sar_pal)), 
+  (`Range Map: Threatened` = c(FALSE, 16, sar_pal)),
+  (`Carbon Potential` = c(FALSE, 1, carbon_pal)), 
+  (`Carbon Storage` = c(FALSE, 2, carbon_pal)),
+  (`Climate Extremes` = c(FALSE, 4, climate_pal)),
+  (`Climate Refugia` = c(FALSE, 5, climate_pal)),
+  (`Climate Velocity` = c(FALSE, 6, climate_pal)),
+  (`Connectivity` = c(FALSE, 7, connectivity_pal)),
+  (`Freshwater Provision` = c(FALSE, 10, freshwater_pal)), 
+  (`Forest Landcover` = c(FALSE, 9, forest_pal)),
+  (`Grassland` = c(FALSE, 11, grass_pal)),
+  (`Wetland` = c(FALSE, 17, wet_pal)),
+  (`Human Footprint Index` = c(FALSE, 12, hfi_pal)), 
+  (`Off` = NULL)
+)
+
+names(base_group_cache) <- c(
+  "Resilience Index", 
+  "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
+  "Carbon Potential", "Carbon Storage",
+  "Climate Extremes", "Climate Refugia", "Climate Velocity",
+  "Connectivity", "Freshwater Provision", 
+  "Forest Landcover", "Grassland", "Wetland",
+  "Human Footprint Index", "Off"
+)
