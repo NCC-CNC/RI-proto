@@ -61,7 +61,7 @@ fluidPage(
              column(6, h4("Threats")),
            ),
            fluidRow(
-             column(6,  numericInput("pa", label = "Existing Conservation", value = 0.1, min = 0, max = 50)),
+             column(6,  numericInput("pa", label = "Existing Conservation", value = 10, min = 0, max = 50)),
              column(6,  numericInput("hfi", label = "Human Footprint Index", value = 10, min = 0, max = 50)), 
            )),
           
@@ -84,9 +84,7 @@ fluidPage(
             left = 40,
             width = 250,
             tags$div(class="ri-dwn",
-                     fluidRow(actionButton("ri_update", "DOWNLOAD RESILIENCE INDEX", width = "100%")))),
-          
-        
+            fluidRow(actionButton("ri_update", "DOWNLOAD RESILIENCE INDEX", width = "100%")))),
           
           # Equation
           tags$div(class="equation",

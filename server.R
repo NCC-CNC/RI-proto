@@ -18,116 +18,19 @@ function(input, output, session) {
         colors = RI_pal,
         layerId = "RI",
         group = "Resilience Index") %>%
-      # # Biodiversity
-      # ## KBA
-      # addRasterImage(
-      #   raster(RI_READY[[13]]), 
-      #   colors = c('#00000000','#ef3b2c'),
-      #   group = "KBA") %>% 
-      # hideGroup("KBA") %>%
-      # ## Critical habitat
-      # addRasterImage(
-      #   raster(RI_READY[[3]]), 
-      #   colors = ch_pal,
-      #   group = "Critical Habitat") %>% 
-      # hideGroup("Critical Habitat") %>%
-      # ## Range: END
-      # addRasterImage(
-      #   raster(RI_READY[[8]]), 
-      #   colors = sar_pal,
-      #   group = "Range Map: Endangered") %>% 
-      # hideGroup("Range Map: Endangered") %>%
-      # ## Range: SPC
-      # addRasterImage(
-      #   raster(RI_READY[[15]]), 
-      #   colors = sar_pal,
-      #   group = "Range Map: Special Concern") %>% 
-      # hideGroup("Range Map: Special Concern") %>%
-      # # Range: THR
-      # addRasterImage(
-      #   raster(RI_READY[[16]]), 
-      #   colors = sar_pal,
-      #   group = "Range Map: Threatened") %>% 
-      # hideGroup("Range Map: Threatened") %>%
-      # # Carbon potential
-      # addRasterImage(
-      #   raster(RI_READY[[1]]), 
-      #   colors = carbon_pal,
-      #   group = "Carbon Potential") %>% 
-      # hideGroup("Carbon Potential") %>%
-      # # Carbon storage
-      # addRasterImage(
-      #   raster(RI_READY[[2]]),
-      #   colors = carbon_pal,
-      #   group = "Carbon Storage") %>% 
-      # hideGroup("Carbon Storage") %>% 
-      # # Climate
-      # ## Extremes
-      # addRasterImage(
-      #   raster(RI_READY[[4]]),
-      #   colors = climate_pal,
-      #   group = "Climate Extremes") %>% 
-      # hideGroup("Climate Extremes") %>% 
-      # ## Refugia
-      # addRasterImage(
-      #   raster(RI_READY[[5]]), 
-      #   colors = climate_pal,
-      #   group = "Climate Refugia") %>% 
-      # hideGroup("Climate Refugia") %>%
-      # ## Velocity
-      # addRasterImage(
-      #   raster(RI_READY[[6]]), 
-      #   colors = climate_pal,
-      #   group = "Climate Velocity") %>% 
-      # hideGroup("Climate Velocity") %>%
-      # # Connectivity
-      # ## Connectivity
-      # addRasterImage(
-      #   raster(RI_READY[[7]]), 
-      #   colors = connectivity_pal,
-      #   group = "Connectivity") %>% 
-      # hideGroup("Connectivity") %>%
-      # # eServices
-      # ## Freshwater provision
-      # addRasterImage(
-      #   raster(RI_READY[[10]]), 
-      #   colors = freshwater_pal,
-      #   group = "Freshwater Provision") %>% 
-      # hideGroup("Freshwater Provision") %>%
-      # # Threats
-      # ## Human footprint index
-      # addRasterImage(
-      #   raster(RI_READY[[12]]),
-      #   colors = hfi_pal,
-      #   group = "Human Footprint Index") %>% 
-      # hideGroup("Human Footprint Index") %>%
-      # # Habitat
-      # ## Forest landcover
-      # addRasterImage(
-      #   raster(RI_READY[[9]]), 
-      #   colors = forest_pal,
-      #   group = "Forest Landcover") %>% 
-      # hideGroup("Forest Landcover") %>%
-      # # Grassland
-      # addRasterImage(
-      #   raster(RI_READY[[11]]), 
-      #   colors = grass_pal,
-      #   group = "Grassland") %>% 
-      # hideGroup("Grassland") %>%
-      # # Wetland
-      # addRasterImage(
-      #   raster(RI_READY[[17]]), 
-      #   colors = wet_pal,
-      #   group = "Wetland") %>% 
-      # hideGroup("Wetland") %>%  
-      # # Protected
-      # addRasterImage(
-      #   raster(pa), 
-      #   colors = pa_pal,
-      #   method = "ngb",
-      #   group = "Protected") %>% 
-      # hideGroup("Protected") %>%  
-      
+      ## KBA
+      addRasterImage(
+        raster(RI_READY[[13]]),
+        colors = c('#00000000','#ef3b2c'),
+        group = "KBA") %>%
+      hideGroup("KBA") %>%
+      # Protected
+      addRasterImage(
+        raster(pa),
+        colors = pa_pal,
+        method = "ngb",
+        group = "Protected") %>%
+      hideGroup("Protected") %>%
       # Layer controls
       addLayersControl(
         overlayGroups = c("Protected", "KBA", "Points"),

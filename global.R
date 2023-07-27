@@ -28,29 +28,8 @@ pts_wgs <- st_transform(pts, crs = 4326) %>%
 # Rasters for Map
 ## RI
 RI <- rast("data/_RI/RI.tif")
-# ## Biodiversity
-# kba <- rast("data/biodiversity/W_Key_biodiversity_areas.tif")
-# ch <- rast("data/biodiversity/ECCC_CH_ALL_HA_SUM0.tif")
-# end <- rast("data/biodiversity/ECCC_SAR_END_N.tif")
-# spc <- rast("data/biodiversity/ECCC_SAR_SPC_N.tif")
-# thr <- rast("data/biodiversity/ECCC_SAR_THR_N.tif")
-# ## Carbon
-# carbon_p <- rast("data/carbon/W_Carbon_potential.tif")
-# carbon_s <- rast("data/carbon/W_Carbon_storage.tif")
-# ## Climate
-# climate_e <- rast("data/climate/W_Climate_extremes.tif")
-# climate_r <- rast("data/climate/W_Climate_refugia.tif")
-# climate_v <- rast("data/climate/W_Climate_shortest_path.tif")
-# ## Connectivity
-# connect <- rast("data/connectivity/W_Connectivity.tif")
-# ## eServices
-# freshwater <- rast("data/eservices/W_Freshwater.tif")
-# ## Habitat
-# forest <- rast("data/habitat/T_LC_Forest-lc.tif")
-# grass <- rast("data/habitat/T_LC_Grassland.tif")
-# wet <- rast("data/habitat/T_LC_Wetlands.tif")
 ## Protection
-pa <- rast("data/protection/Existing_Conservation_ha.tif")
+pa <- RI_READY[[14]] 
 pa[pa == 0] <- NA 
 
 # Palettes for map
@@ -66,7 +45,7 @@ sar_pal <- colorNumeric(palette = "Reds", domain = c(0, 1), na.color = "transpar
 forest_pal <- colorNumeric(palette = "YlGn", domain = c(0, 1), na.color = "transparent")
 grass_pal <- colorNumeric(palette = "Oranges", domain = c(0, 1), na.color = "transparent")
 wet_pal <- colorNumeric(palette = "BuPu", domain = c(0, 1), na.color = "transparent")
-pa_pal <- colorNumeric(palette = "BuGn", domain = c(0.01, 1), na.color = "transparent")
+pa_pal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent")
 
 # Normalize layers between 0-1
 normalize_between_0_and_1 <- function(rast) {
@@ -96,7 +75,7 @@ base_group_cache <- list(
   (`Grassland` = c(FALSE, 11, grass_pal)),
   (`Wetland` = c(FALSE, 17, wet_pal)),
   (`Human Footprint Index` = c(FALSE, 12, hfi_pal)), 
-  (`Off` = NULL)
+  (`Off` = TRUE)
 )
 
 names(base_group_cache) <- c(
