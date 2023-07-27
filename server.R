@@ -186,12 +186,14 @@ function(input, output, session) {
   
   # Update points
   leafletProxy("RI_MAP") %>%
-    leaflet::clearGroup("Points") %>%
+    removeGlPoints("RI_Points") %>%
     addGlPoints(data = pts_wgs,
                 radius = 5,
                 group = "Points",
+                layerId = "RI_Points",
                 popup = ~RI,
-                color = "#2b8cbe") 
+                color = "#2b8cbe") %>%
+    showGroup("Points")
  })
   
   # equation text
