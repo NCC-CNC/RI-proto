@@ -5,13 +5,20 @@ library(raster)
 library(sf)
 library(dplyr)
 library(leafgl)
+library(purrr)
+library(exactextractr)
 
 # Rasters for Equation
-RI_READY <- list.files("data/_RIREADY",  pattern = ".tif$", full.names = TRUE) %>%
-  rast()
+RI_READY <- rast(list.files("data/_RIREADY",  pattern = ".tif$", full.names = TRUE)) 
 
 # Read in 10km points
-pts <- read_sf("data/xy/points10km_RI.shp") 
+pts <- read_sf("data/xy/points10km_RI.shp") %>%
+  mutate(ID = row_number())
+
+# Buffer for extractions
+pts_buf <- st_buffer(pts, 10)
+
+# Points to map
 pts_wgs <- st_transform(pts, crs = 4326) %>%
   dplyr::mutate(
     lon = sf::st_coordinates(.)[,1],

@@ -8,7 +8,7 @@ fluidPage(
     # Sidebar with a slider input for number of bins
     sidebarLayout(
         sidebarPanel(
-          h2(class="ri-title", "RESLIENCE INDEX BUILDER"),
+          h2(class="ri-title", "RESILIENCE INDEX BUILDER"),
           # Biodiversity
           tags$div(class="theme biodiversity",
           h4("Biodiversity"),

@@ -16,7 +16,8 @@ function(input, output, session) {
       addRasterImage(
         raster(RI), 
         colors = RI_pal,
-        group = "Reslience Index") %>%
+        layerId = "RI",
+        group = "Resilience Index") %>%
       # # Biodiversity
       # ## KBA
       # addRasterImage(
@@ -130,7 +131,7 @@ function(input, output, session) {
       # Layer controls
       addLayersControl(
         overlayGroups = c("Protected", "KBA", "Points"),
-        baseGroups = c("Reslience Index", 
+        baseGroups = c("Resilience Index", 
                        "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
                        "Carbon Potential", "Carbon Storage",
                        "Climate Extremes", "Climate Refugia", "Climate Velocity",
@@ -168,10 +169,29 @@ function(input, output, session) {
   
   # Update map
   leafletProxy("RI_MAP") %>%
+    removeImage("RI") %>%
     addRasterImage(
       raster(RI), 
       colors = RI_pal,
-      group = "Reslience Index")
+      group = "Resilience Index")
+  
+  # Extract points
+  ri_df <- exactextractr::exact_extract(RI, pts_buf, "mean", force_df = TRUE) %>%
+    rename("RI" = mean) %>%
+    mutate(ID = row_number()) %>%
+    mutate(RI = round(RI, 2))
+  
+  # Replace value
+  pts_wgs['RI'] <- ri_df['RI']
+  
+  # Update points
+  leafletProxy("RI_MAP") %>%
+    leaflet::clearGroup("Points") %>%
+    addGlPoints(data = pts_wgs,
+                radius = 5,
+                group = "Points",
+                popup = ~RI,
+                color = "#2b8cbe") 
  })
   
   # equation text
