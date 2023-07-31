@@ -146,5 +146,8 @@ function(input, output, session) {
         " <p class=minus>-</p> (<p class=var-threat>human footprint index </p> * <span>", input$hfi, "</span>)"
       ))
     })
+    
+    # Download RI
+    download_SERVER(id = "download_mod1")
 
 }

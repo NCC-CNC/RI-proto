@@ -7,7 +7,7 @@ fluidPage(
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
-        sidebarPanel(
+        sidebarPanel(class="ri-builder", 
           h2(class="ri-title", "RESILIENCE INDEX BUILDER"),
           # Biodiversity
           tags$div(class="theme biodiversity",
@@ -84,13 +84,12 @@ fluidPage(
             left = 40,
             width = 250,
             tags$div(class="ri-dwn",
-            fluidRow(actionButton("ri_update", "DOWNLOAD RESILIENCE INDEX", width = "100%")))),
+            fluidRow(download_UI(id = "download_mod1")))),
           
           # Equation
           tags$div(class="equation",
           h4("Resilience Index Equation:"),
           fluidRow(htmlOutput("equation")))
-          
           
         # CLOSE MAIN PANEL  
         )
