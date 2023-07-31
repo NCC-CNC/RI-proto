@@ -10,9 +10,6 @@ download_UI <- function(id) {
 download_SERVER <- function(id, user_pmp_mean) {
   moduleServer(id, function(input, output, session) {
     
-    browser()
-    
-    
     # Time stamp for output folder
     datetime <- format(Sys.time(),"%Y%m%d%H%M%S")
     
