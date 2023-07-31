@@ -10,6 +10,8 @@ download_UI <- function(id) {
 download_SERVER <- function(id, user_pmp_mean) {
   moduleServer(id, function(input, output, session) {
     
+    browser()
+    
     
     # Time stamp for output folder
     datetime <- format(Sys.time(),"%Y%m%d%H%M%S")
@@ -20,6 +22,9 @@ download_SERVER <- function(id, user_pmp_mean) {
     
     # Save shapefile to tmp director
     writeRaster(RI, paste0(td, "/RI.tif"))
+    
+    # RI equation
+    cat(RI_equ, file = paste0(td, "/RI_EQUATION.txt"))
     
     # Zip
     files2zip <- list.files(td, full.names = TRUE, recursive = FALSE)

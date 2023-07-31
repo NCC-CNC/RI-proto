@@ -124,28 +124,50 @@ function(input, output, session) {
     showGroup("Points")
  })
   
-  # equation text
-    output$equation <-  renderText({
-      HTML(paste0(
-        "(<p class=var-bio>key biodiversity areas</p> * <span>", input$kba, "</span>) ",
-        " + (<p class=var-bio>critical habitat</p> * <span>",  input$ch, "</span>)",
-        " + (<p class=var-bio>endangered specices</p> * <span>", input$range_end, "</span>)",
-        " + (<p class=var-bio>special concern species</p> * <span>", input$range_spc, "</span>)",
-        " + (<p class=var-bio>threatened species</p> * <span>", input$range_thr, "</span>)",
-        " + (<p class=var-carbon>carbon potential</p> * <span>", input$carbon_p, "</span>)",
-        " + (<p class=var-carbon>carbon storage</p> * <span>", input$carbon_s, "</span>)",
-        " <p class=minus>-</p> (<p class=var-climate>climate extremes</p> * <span>", input$climate_e, "</span>)",
-        " + (<p class=var-climate>climate refugia</p> * <span>", input$climate_r, "</span>)",
-        " + (<p class=var-climate>climate velocity</p> * <span>", input$climate_v, "</span>)",
-        " + (<p class=var-connect>connectivity</p> * <span>", input$connect, "</span>)",
-        " + (<p class=var-eservice>freshwater provision</p> * <span>", input$freshwater, "</span>)",
-        " + (<p class=var-habitat>forest landcover</p> * <span>", input$forest, "</span>)",
-        " + (<p class=var-habitat>grassland</p> * <span>", input$grass, "</span>)",
-        " + (<p class=var-habitat>wetland </p> * <span>", input$wet, "</span>)",
-        " + (<p class=var-protection>existing conservation </p> * <span>", input$pa, "</span>)",
-        " <p class=minus>-</p> (<p class=var-threat>human footprint index </p> * <span>", input$hfi, "</span>)"
-      ))
-    })
+  # equation text for download
+  RI_equ <- reactive({ as.character(
+    paste0(
+      "(key biodiversity areas * ", input$kba, ")",
+      " + (critical habitat * ",  input$ch, ")",
+      " + (endangered specices * ", input$range_end, ")",
+      " + (special concern species * ", input$range_spc, ")",
+      " + (threatened species * ", input$range_thr, ")",
+      " + (carbon potential * ", input$carbon_p, ")",
+      " + (carbon storage * ", input$carbon_s, ")",
+      " - (climate extremes * ", input$climate_e, ")",
+      " + (climate refugia * ", input$climate_r, ")",
+      " + (climate velocity * ", input$climate_v, ")",
+      " + (connectivity * ", input$connect, ")",
+      " + (freshwater provision * ", input$freshwater, ")",
+      " + (forest landcover * ", input$forest, ")",
+      " + (grassland * ", input$grass, ")",
+      " + (wetland * ", input$wet, ")",
+      " + (existing conservation * ", input$pa, ")",
+      " - (human footprint index * ", input$hfi, ")"
+    )) })
+
+  # RI equation for display
+  output$equation <-  renderText({
+    HTML(paste0(
+      "(<p class=var-bio>key biodiversity areas</p> * <span>", input$kba, "</span>) ",
+      " + (<p class=var-bio>critical habitat</p> * <span>",  input$ch, "</span>)",
+      " + (<p class=var-bio>endangered specices</p> * <span>", input$range_end, "</span>)",
+      " + (<p class=var-bio>special concern species</p> * <span>", input$range_spc, "</span>)",
+      " + (<p class=var-bio>threatened species</p> * <span>", input$range_thr, "</span>)",
+      " + (<p class=var-carbon>carbon potential</p> * <span>", input$carbon_p, "</span>)",
+      " + (<p class=var-carbon>carbon storage</p> * <span>", input$carbon_s, "</span>)",
+      " <p class=minus>-</p> (<p class=var-climate>climate extremes</p> * <span>", input$climate_e, "</span>)",
+      " + (<p class=var-climate>climate refugia</p> * <span>", input$climate_r, "</span>)",
+      " + (<p class=var-climate>climate velocity</p> * <span>", input$climate_v, "</span>)",
+      " + (<p class=var-connect>connectivity</p> * <span>", input$connect, "</span>)",
+      " + (<p class=var-eservice>freshwater provision</p> * <span>", input$freshwater, "</span>)",
+      " + (<p class=var-habitat>forest landcover</p> * <span>", input$forest, "</span>)",
+      " + (<p class=var-habitat>grassland</p> * <span>", input$grass, "</span>)",
+      " + (<p class=var-habitat>wetland </p> * <span>", input$wet, "</span>)",
+      " + (<p class=var-protection>existing conservation </p> * <span>", input$pa, "</span>)",
+      " <p class=minus>-</p> (<p class=var-threat>human footprint index </p> * <span>", input$hfi, "</span>)"
+    ))
+  })
     
     # Download RI
     download_SERVER(id = "download_mod1")
