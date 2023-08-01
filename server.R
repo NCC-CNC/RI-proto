@@ -90,7 +90,6 @@ function(input, output, session) {
            group = input$RI_MAP_tile) %>%
          showGroup(input$RI_MAP_tile)
     }
-    
   })
   
   # RI equation

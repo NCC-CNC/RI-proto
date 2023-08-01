@@ -80,7 +80,8 @@ fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
           # Info modal
-          bsModal(id="info-modal", title="RESILEIENCE INDEX GUIDE", trigger="info", size = "large"),
+          bsModal(id="info-modal", title="RESILEIENCE INDEX GUIDE", trigger="info", size = "large",
+            tags$iframe(style="height:600px; width:100%", src="RI_GUIDE.pdf")),
           
           # Map
           leafletOutput(outputId = "RI_MAP", height = "calc(100vh - 200px)", width = "100%"),
