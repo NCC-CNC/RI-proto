@@ -122,4 +122,30 @@ a.leaflet-control-zoom-out {
   background-color: #fb8072;
 }
 
+/* spinner  */
+/* map spinner */
+.spinner {
+  position: absolute;
+  display: none;
+  margin: auto;
+  height: 10em;
+  top: 30%; right: 50%;
+  transform: translate(50%,-50%);
+  width: 10em;
+  border: 6px solid rgba(0, 96, 46, 0.2);
+  border-top-color: rgba(0, 96, 46, 0.8);
+  border-radius: 50%;
+  animation: rotation 0.8s infinite linear;
+  z-index: 9999;
+}
+/* map spinner: rotation */
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
 

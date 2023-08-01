@@ -1,6 +1,6 @@
 
 fluidPage(
-  
+  useShinyjs(),
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
   ),  
@@ -84,7 +84,9 @@ fluidPage(
             tags$iframe(style="height:600px; width:100%", src="RI_GUIDE.pdf")),
           
           # Map
-          leafletOutput(outputId = "RI_MAP", height = "calc(100vh - 200px)", width = "100%"),
+          tags$div(class="map-container",
+          tags$div(class="spinner"),
+          leafletOutput(outputId = "RI_MAP", height = "calc(100vh - 200px)", width = "100%")),
           
           absolutePanel(
             top = 0,

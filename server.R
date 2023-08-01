@@ -62,6 +62,11 @@ function(input, output, session) {
   
   # update map with themes
   observeEvent(input$RI_MAP_tile, {
+    # add map spinner
+    shinyjs::runjs(
+     "const spinner = document.querySelector('.spinner');
+     spinner.style.display = 'block'")
+    
     # remove legend if off
     if (input$RI_MAP_tile == "Off") {
       leafletProxy("RI_MAP") %>%
@@ -90,6 +95,11 @@ function(input, output, session) {
            group = input$RI_MAP_tile) %>%
          showGroup(input$RI_MAP_tile)
     }
+    
+    # remove spinner
+    shinyjs::runjs(
+      "const spinner = document.querySelector('.spinner');
+      spinner.style.display = 'none'")  
   })
   
   # RI equation
