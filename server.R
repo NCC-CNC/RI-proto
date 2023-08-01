@@ -18,6 +18,13 @@ function(input, output, session) {
         colors = RI_pal,
         layerId = "RI",
         group = "Resilience Index") %>%
+      addLegend(pal=RI_lpal, 
+                values=values(raster(RI)), 
+                position="bottomleft", 
+                opacity=1,
+                title="values",
+                layerId="ri-legend",
+                labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE))) %>%
       ## KBA
       addRasterImage(
         raster(RI_READY[[13]]),
@@ -55,7 +62,23 @@ function(input, output, session) {
   
   # update map with themes
   observeEvent(input$RI_MAP_tile, {
-    
+    # remove legend if off
+    if (input$RI_MAP_tile == "Off") {
+      leafletProxy("RI_MAP") %>%
+        removeControl("ri-legend")
+    } else {
+      # add legend based on layer
+      leafletProxy("RI_MAP") %>%
+        removeControl("ri-legend") %>%
+        addLegend(pal=base_group_cache[[input$RI_MAP_tile]][4][[1]], 
+                  values=values(raster(RI_READY[[base_group_cache[[input$RI_MAP_tile]][2][[1]]]])), 
+                  position="bottomleft", 
+                  opacity=1,
+                  title="values", 
+                  layerId="ri-legend",
+                  labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
+    }
+    # lazy load
     if (!base_group_cache[[input$RI_MAP_tile]][1][[1]]) {
       # update variable to TRUE
       base_group_cache[[input$RI_MAP_tile]][1][[1]] <<- TRUE

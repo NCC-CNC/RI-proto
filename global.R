@@ -35,18 +35,29 @@ pa[pa == 0] <- NA
 
 # Palettes for map
 RI_pal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent")
-RI_pal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent")
+RI_lpal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 carbon_pal <- colorNumeric(palette = "YlOrBr", domain = c(0, 1), na.color = "transparent")
+carbon_lpal <- colorNumeric(palette = "YlOrBr", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 climate_pal <- colorNumeric(palette = "magma", domain = c(0, 1), na.color = "transparent")
+climate_lpal <- colorNumeric(palette = "magma", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
+connectivity_lpal <- colorNumeric(palette = "PRGn", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 connectivity_pal <- colorNumeric(palette = "PRGn", domain = c(0, 1), na.color = "transparent")
 freshwater_pal <- colorNumeric(palette = "BrBG", domain = c(0, 1), na.color = "transparent")
+freshwater_lpal <- colorNumeric(palette = "BrBG", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 hfi_pal <- colorNumeric(palette = "RdYlBu", domain = c(0, 1), na.color = "transparent")
+hfi_lpal <- colorNumeric(palette = "RdYlBu", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 ch_pal <- colorNumeric(palette = "YlOrRd", domain = c(0, 1), na.color = "transparent")
+ch_lpal <- colorNumeric(palette = "YlOrRd", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 sar_pal <- colorNumeric(palette = "Reds", domain = c(0, 1), na.color = "transparent")
+sar_lpal <- colorNumeric(palette = "Reds", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 forest_pal <- colorNumeric(palette = "YlGn", domain = c(0, 1), na.color = "transparent")
+forest_lpal <- colorNumeric(palette = "YlGn", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 grass_pal <- colorNumeric(palette = "Oranges", domain = c(0, 1), na.color = "transparent")
+grass_lpal <- colorNumeric(palette = "Oranges", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 wet_pal <- colorNumeric(palette = "BuPu", domain = c(0, 1), na.color = "transparent")
+wet_lpal <- colorNumeric(palette = "BuPu", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 pa_pal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent")
+pa_lpal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent", reverse = TRUE)
 
 # Normalize layers between 0-1
 normalize_between_0_and_1 <- function(rast) {
@@ -60,22 +71,22 @@ normalize_between_0_and_1 <- function(rast) {
 
 # Layer cache
 base_group_cache <- list(
-  (`Resilience Index` = c(TRUE, 1, RI_pal)),
-  (`Critical Habitat` = c(FALSE, 3, ch_pal)), 
-  (`Range Map: Endangered` = c(FALSE, 8, sar_pal)),
-  (`Range Map: Special Concern` = c(FALSE, 15, sar_pal)), 
-  (`Range Map: Threatened` = c(FALSE, 16, sar_pal)),
-  (`Carbon Potential` = c(FALSE, 1, carbon_pal)), 
-  (`Carbon Storage` = c(FALSE, 2, carbon_pal)),
-  (`Climate Extremes` = c(FALSE, 4, climate_pal)),
-  (`Climate Refugia` = c(FALSE, 5, climate_pal)),
-  (`Climate Velocity` = c(FALSE, 6, climate_pal)),
-  (`Connectivity` = c(FALSE, 7, connectivity_pal)),
-  (`Freshwater Provision` = c(FALSE, 10, freshwater_pal)), 
-  (`Forest Landcover` = c(FALSE, 9, forest_pal)),
-  (`Grassland` = c(FALSE, 11, grass_pal)),
-  (`Wetland` = c(FALSE, 17, wet_pal)),
-  (`Human Footprint Index` = c(FALSE, 12, hfi_pal)), 
+  (`Resilience Index` = c(TRUE, 1, RI_pal, RI_lpal)),
+  (`Critical Habitat` = c(FALSE, 3, ch_pal, ch_lpal)), 
+  (`Range Map: Endangered` = c(FALSE, 8, sar_pal, sar_lpal)),
+  (`Range Map: Special Concern` = c(FALSE, 15, sar_pal, sar_lpal)), 
+  (`Range Map: Threatened` = c(FALSE, 16, sar_pal, sar_lpal)),
+  (`Carbon Potential` = c(FALSE, 1, carbon_pal, carbon_lpal)), 
+  (`Carbon Storage` = c(FALSE, 2, carbon_pal, carbon_lpal)),
+  (`Climate Extremes` = c(FALSE, 4, climate_pal, climate_lpal)),
+  (`Climate Refugia` = c(FALSE, 5, climate_pal, climate_lpal)),
+  (`Climate Velocity` = c(FALSE, 6, climate_pal, climate_lpal)),
+  (`Connectivity` = c(FALSE, 7, connectivity_pal, connectivity_lpal)),
+  (`Freshwater Provision` = c(FALSE, 10, freshwater_pal, freshwater_lpal)), 
+  (`Forest Landcover` = c(FALSE, 9, forest_pal, forest_lpal)),
+  (`Grassland` = c(FALSE, 11, grass_pal, grass_lpal)),
+  (`Wetland` = c(FALSE, 17, wet_pal, wet_lpal)),
+  (`Human Footprint Index` = c(FALSE, 12, hfi_pal, hfi_lpal)), 
   (`Off` = TRUE)
 )
 
