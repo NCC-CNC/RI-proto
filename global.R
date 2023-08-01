@@ -7,6 +7,7 @@ library(dplyr)
 library(leafgl)
 library(purrr)
 library(exactextractr)
+library(shinyBS)
 
 # Rasters for Equation
 RI_READY <- rast(list.files("data/_RIREADY",  pattern = ".tif$", full.names = TRUE)) 

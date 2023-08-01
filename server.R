@@ -144,7 +144,8 @@ function(input, output, session) {
       " + (wetland * ", input$wet, ")",
       " + (existing conservation * ", input$pa, ")",
       " - (human footprint index * ", input$hfi, ")"
-    )) })
+    )) 
+  })
 
   # RI equation for display
   output$equation <-  renderText({
@@ -171,5 +172,8 @@ function(input, output, session) {
     
     # Download RI
     download_SERVER(id = "download_mod1")
-
+    
+    # Info modal
+    toggleModal(session, modalId="info-modal", toggle="close")
+    
 }

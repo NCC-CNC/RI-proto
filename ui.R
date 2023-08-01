@@ -7,8 +7,11 @@ fluidPage(
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
-        sidebarPanel(class="ri-builder", 
-          h2(class="ri-title", "RESILIENCE INDEX BUILDER"),
+        sidebarPanel(class="ri-builder",
+          fluidRow(class="ri-header", 
+            column(11, h2(class="ri-title", "RESILIENCE INDEX BUILDER")),
+            column(1, actionButton(class="info-btn", inputId="info", label="", icon = icon('info')))
+          ),
           # Biodiversity
           tags$div(class="theme biodiversity",
           h4("Biodiversity"),
@@ -76,6 +79,9 @@ fluidPage(
         
         # Show a plot of the generated distribution
         mainPanel(
+          # Info modal
+          bsModal(id="info-modal", title="RESILEIENCE INDEX GUIDE", trigger="info", size = "large"),
+          
           # Map
           leafletOutput(outputId = "RI_MAP", height = "calc(100vh - 200px)", width = "100%"),
           
