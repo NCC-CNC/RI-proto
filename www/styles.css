@@ -148,4 +148,7 @@ a.leaflet-control-zoom-out {
   }
 }
 
+.leaflet-control-layers-base label:first-child {
+  border-bottom: solid 0.5px black;
+}
 
