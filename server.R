@@ -9,7 +9,7 @@ function(input, output, session) {
       addGlPoints(data = pts_wgs,
                   radius = 5,
                   group = "Points",
-                  popup = ~RI,
+                  popup = paste0("<b>RI: </b>", pts_wgs$RI),
                   color = "#2b8cbe") %>%
       hideGroup("Points") %>%
       # RI
@@ -126,6 +126,11 @@ function(input, output, session) {
   # Update RI: RI equation
   observeEvent(input$ri_update, {
     
+    # add map spinner
+    shinyjs::runjs(
+      "const spinner = document.querySelector('.spinner');
+     spinner.style.display = 'block'")    
+    
   RI <- (
      (RI_READY$W_Carbon_potential  * input$carbon_p) # carbon potential
     + (RI_READY$W_Carbon_storage * input$carbon_s)  # + carbon storage
@@ -172,9 +177,15 @@ function(input, output, session) {
                 radius = 5,
                 group = "Points",
                 layerId = "RI_Points",
-                popup = ~RI,
+                popup = paste0("<b>RI: </b>", pts_wgs$RI),
                 color = "#2b8cbe") %>%
     showGroup("Points")
+  
+  # remove spinner
+  shinyjs::runjs(
+    "const spinner = document.querySelector('.spinner');
+      spinner.style.display = 'none'")    
+  
  })
   
   # equation text for download

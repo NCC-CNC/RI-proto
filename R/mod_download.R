@@ -2,7 +2,7 @@
 download_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    downloadButton(ns("download"), "DOWNLOAD RESILIENCE INDEX", width = "100%")
+    downloadButton(ns("download"), "DOWNLOAD RI", width = "100%")
   )
 }
 
@@ -21,7 +21,7 @@ download_SERVER <- function(id, user_pmp_mean) {
     writeRaster(RI, paste0(td, "/RI.tif"))
     
     # RI equation
-    cat(RI_equ, file = paste0(td, "/RI_EQUATION.txt"))
+    # cat(RI_equ, file = paste0(td, "/RI_EQUATION.txt"))
     
     # Zip
     files2zip <- list.files(td, full.names = TRUE, recursive = FALSE)
