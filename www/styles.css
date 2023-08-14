@@ -103,7 +103,8 @@ a.leaflet-control-zoom-out {
 }
 
 .var-eservice,
-#freshwater-label {
+#freshwater-label,
+#rec-label{
   background-color: #80b1d3;
 }
 

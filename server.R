@@ -9,7 +9,27 @@ function(input, output, session) {
       addGlPoints(data = pts_wgs,
                   radius = 5,
                   group = "Points",
-                  popup = paste0("<b>RI: </b>", pts_wgs$RI),
+                  popup = 
+                    paste0("<b>RI: </b>", pts_wgs$RI 
+                           # "<hr>",
+                           # "<b>Critical Habitat: </b>", pts_wgs$ch, "<br>",
+                           # "<b>Endangered: </b>", pts_wgs$end, "<br>",
+                           # "<b>Special Concern: </b>", pts_wgs$spc, "<br>",
+                           # "<b>Threatened: </b>", pts_wgs$thr, "<br>", 
+                           # "<b>Endangered: </b>", pts_wgs$end, "<br>",
+                           # "<b>Carbon Potential: </b>", pts_wgs$carbon_p, "<br>",
+                           # "<b>Carbon Storage: </b>", pts_wgs$carbon_s, "<br>",
+                           # "<b>Climate Extremes: </b>", pts_wgs$climate_e, "<br>",
+                           # "<b>Climate Refugia: </b>", pts_wgs$climate_r, "<br>",
+                           # "<b>Climate Velocity: </b>", pts_wgs$climate_v, "<br>",
+                           # "<b>Connectivity: </b>", pts_wgs$connectivi, "<br>",
+                           # "<b>Freshwater: </b>", pts_wgs$freshwater, "<br>",
+                           # "<b>Recreation: </b>", pts_wgs$rec, "<br>",
+                           # "<b>Forest Landcover: </b>", pts_wgs$forset, "<br>",
+                           # "<b>Grassland: </b>", pts_wgs$grass, "<br>",
+                           # "<b>Wetland: </b>", pts_wgs$wet, "<br>",
+                           # "<b>Human Footprint: </b>", pts_wgs$hfi
+                           ),
                   color = "#2b8cbe") %>%
       hideGroup("Points") %>%
       # RI
@@ -45,7 +65,8 @@ function(input, output, session) {
                        "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
                        "Carbon Potential", "Carbon Storage",
                        "Climate Extremes", "Climate Refugia", "Climate Velocity",
-                       "Connectivity", "Freshwater Provision", 
+                       "Connectivity", 
+                       "Freshwater Provision", "Recreation", 
                        "Forest Landcover", "Grassland", "Wetland",
                        "Human Footprint Index", "Off"),
         options = layersControlOptions(collapsed = FALSE)) %>%
@@ -105,22 +126,23 @@ function(input, output, session) {
   # Reset RI to CP&P recommendation 
   observeEvent(input$ri_reset, {
     updateNumericInput(session, "kba", value = 15)
-    updateNumericInput(session, "ch", value = 10)
-    updateNumericInput(session, "range_end", value = 5)
-    updateNumericInput(session, "range_spc", value = 1)
-    updateNumericInput(session, "range_thr", value = 3)
-    updateNumericInput(session, "carbon_p", value = 1)
-    updateNumericInput(session, "carbon_s", value = 1)
-    updateNumericInput(session, "climate_e", value = 10)
-    updateNumericInput(session, "climate_r", value = 15)
-    updateNumericInput(session, "climate_v", value = 15)
-    updateNumericInput(session, "connect", value = 20)
+    updateNumericInput(session, "ch", value = 9)
+    updateNumericInput(session, "range_end", value = 8)
+    updateNumericInput(session, "range_spc", value = 6)
+    updateNumericInput(session, "range_thr", value = 7)
+    updateNumericInput(session, "carbon_p", value = 5)
+    updateNumericInput(session, "carbon_s", value = 5)
+    updateNumericInput(session, "climate_e", value = 12)
+    updateNumericInput(session, "climate_r", value = 6)
+    updateNumericInput(session, "climate_v", value = 6)
+    updateNumericInput(session, "connect", value = 13)
     updateNumericInput(session, "freshwater", value = 1)
-    updateNumericInput(session, "forest", value = 1)
-    updateNumericInput(session, "grass", value = 1)
-    updateNumericInput(session, "wet", value = 1)
-    updateNumericInput(session, "pa", value = 10)
-    updateNumericInput(session, "hfi", value = 10)
+    updateNumericInput(session, "rec", value = 1)
+    updateNumericInput(session, "forest", value = 2)
+    updateNumericInput(session, "grass", value = 2)
+    updateNumericInput(session, "wet", value = 2)
+    updateNumericInput(session, "pa", value = 12)
+    updateNumericInput(session, "hfi", value = 38)
   })
   
   # Update RI: RI equation
@@ -142,6 +164,7 @@ function(input, output, session) {
     + (RI_READY$ECCC_SAR_END_N * input$range_end) # + range map END
     + (RI_READY$`T_LC_Forest-lc` * input$forest) # + forest land cover
     + (RI_READY$W_Freshwater * input$freshwater)  # + freshwater provision
+    + (RI_READY$W_Recreation * input$rec)  # + recreation
     + (RI_READY$T_LC_Grassland * input$grass) # + grassland
     - (RI_READY$W_Human_footprint * input$hfi)  # - human footprint index
     + (RI_READY$W_Key_biodiversity_areas * input$kba)            # + key biodiversity areas
@@ -203,6 +226,7 @@ function(input, output, session) {
       " + (climate velocity * ", input$climate_v, ")",
       " + (connectivity * ", input$connect, ")",
       " + (freshwater provision * ", input$freshwater, ")",
+      " + (recreation * ", input$rec, ")",
       " + (forest landcover * ", input$forest, ")",
       " + (grassland * ", input$grass, ")",
       " + (wetland * ", input$wet, ")",
@@ -226,6 +250,7 @@ function(input, output, session) {
       " + (<p class=var-climate>climate velocity</p> * <span>", input$climate_v, "</span>)",
       " + (<p class=var-connect>connectivity</p> * <span>", input$connect, "</span>)",
       " + (<p class=var-eservice>freshwater provision</p> * <span>", input$freshwater, "</span>)",
+      " + (<p class=var-eservice>recreation</p> * <span>", input$rec, "</span>)",
       " + (<p class=var-habitat>forest landcover</p> * <span>", input$forest, "</span>)",
       " + (<p class=var-habitat>grassland</p> * <span>", input$grass, "</span>)",
       " + (<p class=var-habitat>wetland </p> * <span>", input$wet, "</span>)",
