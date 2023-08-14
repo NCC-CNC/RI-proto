@@ -102,7 +102,28 @@ function(input, output, session) {
       spinner.style.display = 'none'")  
   })
   
-  # RI equation
+  # Reset RI to CP&P recommendation 
+  observeEvent(input$ri_reset, {
+    updateNumericInput(session, "kba", value = 15)
+    updateNumericInput(session, "ch", value = 10)
+    updateNumericInput(session, "range_end", value = 5)
+    updateNumericInput(session, "range_spc", value = 1)
+    updateNumericInput(session, "range_thr", value = 3)
+    updateNumericInput(session, "carbon_p", value = 1)
+    updateNumericInput(session, "carbon_s", value = 1)
+    updateNumericInput(session, "climate_e", value = 10)
+    updateNumericInput(session, "climate_r", value = 15)
+    updateNumericInput(session, "climate_v", value = 15)
+    updateNumericInput(session, "connect", value = 20)
+    updateNumericInput(session, "freshwater", value = 1)
+    updateNumericInput(session, "forest", value = 1)
+    updateNumericInput(session, "grass", value = 1)
+    updateNumericInput(session, "wet", value = 1)
+    updateNumericInput(session, "pa", value = 10)
+    updateNumericInput(session, "hfi", value = 10)
+  })
+  
+  # Update RI: RI equation
   observeEvent(input$ri_update, {
     
   RI <- (

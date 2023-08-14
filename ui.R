@@ -20,9 +20,9 @@ fluidPage(
             column(6,  numericInput("ch", label = "Critical Habitat", value = 10, min = 0, max = 50))
           ),
           fluidRow(
-            column(4,  numericInput("range_end", label = "Endangered Species", value = 5, min = 0, max = 50)),
-            column(4,  numericInput("range_spc", label = "Special Concern Species", value = 1, min = 0, max = 50)),
-            column(4,  numericInput("range_thr", label = "Threatened Species", value = 3, min = 0, max = 50))
+            column(4,  numericInput("range_end", label = "Endangered", value = 5, min = 0, max = 50)),
+            column(4,  numericInput("range_spc", label = "Special Concern", value = 1, min = 0, max = 50)),
+            column(4,  numericInput("range_thr", label = "Threatened", value = 3, min = 0, max = 50))
           )),             
           # Carbon
           tags$div(class="theme carbon",
@@ -71,7 +71,8 @@ fluidPage(
           # Update Map
           tags$div(class="ri-btn",
           fluidRow(
-            column(12, actionButton("ri_update", "UPDATE RESILIENCE INDEX", width = "100%"))
+            column(4, actionButton("ri_reset", "RESET RI", width = "100%")),
+            column(8, actionButton("ri_update", "UPDATE RI", width = "100%"))
           ))
           
         # CLOSE SIDEBAR PANNEL 
