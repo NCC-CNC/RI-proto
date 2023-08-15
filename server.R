@@ -188,7 +188,7 @@ function(input, output, session) {
   ri_df <- exactextractr::exact_extract(RI, pts_buf, "mean", force_df = TRUE) %>%
     rename("RI" = mean) %>%
     mutate(ID = row_number()) %>%
-    mutate(RI = round(RI, 2))
+    mutate(RI = round(RI, 4))
   
   # Replace value
   pts_wgs['RI'] <- ri_df['RI']
