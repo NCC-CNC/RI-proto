@@ -7,7 +7,7 @@ download_UI <- function(id) {
 }
 
 # Download server
-download_SERVER <- function(id, user_pmp_mean) {
+download_SERVER <- function(id, RI, weights_tbl) {
   moduleServer(id, function(input, output, session) {
     
     # Time stamp for output folder
@@ -20,8 +20,8 @@ download_SERVER <- function(id, user_pmp_mean) {
     # Save shapefile to tmp director
     writeRaster(RI, paste0(td, "/RI.tif"))
     
-    # RI equation
-    # cat(RI_equ, file = paste0(td, "/RI_EQUATION.txt"))
+    # Save weights csv
+    write.xlsx(as.data.frame(weights_tbl()), paste0(td, "/WEIGHTS.xlsx"), row.names = FALSE)
     
     # Zip
     files2zip <- list.files(td, full.names = TRUE, recursive = FALSE)

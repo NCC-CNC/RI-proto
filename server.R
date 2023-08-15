@@ -2,6 +2,9 @@
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
+  # make weights df reactive
+  weights_tbl <- reactiveVal(weights_tbl)
+  
   # init map
   output$RI_MAP <- renderLeaflet({
     leaflet() %>%
@@ -151,7 +154,17 @@ function(input, output, session) {
     # add map spinner
     shinyjs::runjs(
       "const spinner = document.querySelector('.spinner');
-     spinner.style.display = 'block'")    
+     spinner.style.display = 'block'")
+    
+  # update weights table
+  weight_values <- c(input$kba, input$ch, 
+               input$range_end, input$range_spc, input$range_thr,
+               input$carbon_p, input$carbon_s, 
+               input$climate_e, input$climate_r, input$climate_v,
+               input$connect, input$freshwater, input$rec,
+               input$forest, input$grass, input$wet,
+               input$pa, input$hfi)
+   weights_tbl(weights_tbl() %>% mutate(WEIGHTS = weight_values))
     
   RI <- (
      (RI_READY$W_Carbon_potential  * input$carbon_p) # carbon potential
@@ -174,7 +187,7 @@ function(input, output, session) {
     + (RI_READY$T_LC_Wetlands * input$wet) # + wetland
   )
 
-  RI <-  normalize_between_0_and_1(RI)
+  RI <<-  normalize_between_0_and_1(RI)
   
   # Update map
   leafletProxy("RI_MAP") %>%
@@ -235,6 +248,22 @@ function(input, output, session) {
     )) 
   })
 
+  # RI weight tally
+  output$pos_weights <-  renderText({
+    
+    positive_weight_tally <- (input$kba + input$ch + input$range_end + input$range_spc +
+      input$range_thr + input$carbon_p + input$carbon_s +
+      input$climate_r + input$climate_v + input$connect + input$freshwater +
+      input$rec + input$forest + input$grass + input$wet + input$pa) 
+  
+    HTML(paste0("<b> Positive Weight tally:</b> ", positive_weight_tally))
+  })
+  
+  output$neg_weights <-  renderText({ 
+    negative_weight_tally <- -input$hfi + -input$climate_e
+    HTML(paste0("<b>Negative Weight tally:</b> ", negative_weight_tally))
+  })    
+  
   # RI equation for display
   output$equation <-  renderText({
     HTML(paste0(
@@ -258,9 +287,11 @@ function(input, output, session) {
       " <p class=minus>-</p> (<p class=var-threat>human footprint index </p> * <span>", input$hfi, "</span>)"
     ))
   })
-    
+  
     # Download RI
-    download_SERVER(id = "download_mod1")
+  observe(
+    download_SERVER(id = "download_mod1", RI = RI, weights_tbl = weights_tbl)
+  )
     
     # Info modal
     toggleModal(session, modalId="info-modal", toggle="close")

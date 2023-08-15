@@ -36,8 +36,8 @@ fluidPage(
           h4("Climate"),
           fluidRow(
             column(4,  numericInput("climate_e", label = "Extremes", value = 12, min = 0, max = 50)),
-            column(4,  numericInput("climate_r", label = "Refugia", value = 7, min = 0, max = 50)), 
-            column(4,  numericInput("climate_v", label = "Velocity", value = 7, min = 0, max = 50))
+            column(4,  numericInput("climate_r", label = "Refugia", value = 6, min = 0, max = 50)), 
+            column(4,  numericInput("climate_v", label = "Velocity", value = 6, min = 0, max = 50))
           )),
           # Connectivity / Freshwater
           tags$div(class="theme connectivity",
@@ -67,6 +67,13 @@ fluidPage(
            fluidRow(
              column(6,  numericInput("pa", label = "Existing Conservation", value = 12, min = 0, max = 50)),
              column(6,  numericInput("hfi", label = "Human Footprint Index", value = 38, min = 0, max = 50)), 
+           )),
+          
+          # Weight tally
+          tags$div(class="ri-weights",
+           fluidRow(
+             column(6, htmlOutput("pos_weights")),
+             column(6, htmlOutput("neg_weights"))
            )),
           
           # Update Map

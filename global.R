@@ -9,9 +9,14 @@ library(purrr)
 library(exactextractr)
 library(shinyBS)
 library(shinyjs)
+library(readxl)
+library(xlsx)
 
 # Rasters for Equation
 RI_READY <- rast(list.files("data/_RIREADY",  pattern = ".tif$", full.names = TRUE)) 
+
+# Weights csv
+weights_tbl <- read_xlsx("data/WEIGHTS.xlsx")
 
 # Read in 10km points
 pts <- read_sf("data/xy/points10km_RI.shp") %>%
