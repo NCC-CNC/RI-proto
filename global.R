@@ -11,6 +11,7 @@ library(shinyBS)
 library(shinyjs)
 library(readxl)
 library(xlsx)
+library(shinycssloaders)
 
 # Rasters for Equation
 RI_READY <- rast(list.files("data/_RIREADY",  pattern = ".tif$", full.names = TRUE)) 

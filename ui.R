@@ -95,7 +95,8 @@ fluidPage(
           # Map
           tags$div(class="map-container",
           tags$div(class="spinner"),
-          leafletOutput(outputId = "RI_MAP", height = "calc(100vh - 200px)", width = "100%")),
+          withSpinner(proxy.height = "calc(100vh - 200px)", color = "#33862B",
+          leafletOutput(outputId = "RI_MAP", height = "calc(100vh - 200px)", width = "100%"))),
           
           absolutePanel(
             top = 0,
