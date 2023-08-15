@@ -293,7 +293,17 @@ function(input, output, session) {
     download_SERVER(id = "download_mod1", RI = RI, weights_tbl = weights_tbl)
   )
     
-    # Info modal
-    toggleModal(session, modalId="info-modal", toggle="close")
-    
+  # Info modal
+  toggleModal(session, modalId="info-modal", toggle="close")
+  
+  # Tool tips
+  addTooltip(session, id = "ri_reset", title = "Reset weights back to CP&P Recommendation",
+             placement = "top", trigger = "hover")
+  
+  addTooltip(session, id = "ri_update", title = "Update RI using new weights",
+             placement = "top", trigger = "hover")
+  
+  addTooltip(session, id = "info", title = "View PowerPoint",
+             placement = "bottom", trigger = "hover")  
+  
 }
