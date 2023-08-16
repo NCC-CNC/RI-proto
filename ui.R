@@ -13,6 +13,7 @@ fluidPage(
             column(11, h2(class="ri-title", "RESILIENCE INDEX BUILDER")),
             column(1, actionButton(class="info-btn", inputId="info", label="", icon = icon('info')))
           ),
+          
           # Weight builder:
           ## biodiversity
           tags$div(class="theme biodiversity",
