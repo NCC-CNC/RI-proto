@@ -45,6 +45,7 @@ function(input, output, session) {
       addGlPoints(data = pts_wgs,
                   radius = 5,
                   group = "Points",
+                  layerId = "RI_Points",
                   popup = 
                     paste0("<b>RI: </b>", pts_wgs$RI),
                   color = "#2b8cbe") %>%
@@ -225,15 +226,17 @@ function(input, output, session) {
   
   ## update points
   leafletProxy("RI_MAP") %>%
-    removeGlPoints("RI_Points") %>%
+   clearGlLayers() %>%
     addGlPoints(data = pts_wgs,
                 radius = 5,
                 group = "Points",
                 layerId = "RI_Points",
                 popup = paste0("<b>RI: </b>", pts_wgs$RI),
                 color = "#2b8cbe") %>%
-    showGroup("Points")
-  
+    hideGroup("Points") %>% # <--- hack to remove points??
+    showGroup("Points") %>% # <--- hack to remove points??
+    hideGroup("Points") # <--- hack to remove points??
+   
   ## remove spinner
   shinyjs::runjs(
     "const spinner = document.querySelector('.spinner');
