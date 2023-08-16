@@ -16,10 +16,10 @@ library(shinycssloaders)
 # Rasters for Equation
 RI_READY <- rast(list.files("data/_RIREADY",  pattern = ".tif$", full.names = TRUE)) 
 
-# Weights csv
+# Weights excel
 weights_tbl <- read_xlsx("data/WEIGHTS.xlsx")
 
-# Read in 10km points
+# Read in points
 pts <- read_sf("data/xy/points10km_RI.shp") %>%
   mutate(ID = row_number())
 
@@ -36,7 +36,7 @@ pts_wgs <- st_transform(pts, crs = 4326) %>%
 # Rasters for Map
 ## RI
 RI <<- rast("data/_RI/RI.tif")
-## Protection
+## protection
 pa <- RI_READY[[14]] 
 pa[pa == 0] <- NA 
 
@@ -66,7 +66,7 @@ wet_lpal <- colorNumeric(palette = "BuPu", domain = c(0, 1), na.color = "transpa
 pa_pal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent")
 pa_lpal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent", reverse = TRUE)
 
-# Normalize layers between 0-1
+# Normalize layers between 0-1 function
 normalize_between_0_and_1 <- function(rast) {
   mm <- terra::minmax(rast)
   min_val <- mm[1]
@@ -76,7 +76,7 @@ normalize_between_0_and_1 <- function(rast) {
   return(normalized_data)
 }
 
-# Layer cache
+# Layer cache (for lazy loading)
 base_group_cache <- list(
   (`Resilience Index` = c(TRUE, 1, RI_pal, RI_lpal)),
   (`Critical Habitat` = c(FALSE, 3, ch_pal, ch_lpal)), 
@@ -97,7 +97,7 @@ base_group_cache <- list(
   (`Human Footprint Index` = c(FALSE, 12, hfi_pal, hfi_lpal)), 
   (`Off` = TRUE)
 )
-
+## update names
 names(base_group_cache) <- c(
   "Resilience Index", 
   "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
@@ -108,9 +108,3 @@ names(base_group_cache) <- c(
   "Forest Landcover", "Grassland", "Wetland",
   "Human Footprint Index", "Off"
 )
-
-overlay_group_cache <- list(
-  (`KBA` = list(FALSE, 13, c('#00000000','#ef3b2c'))),
-  (`Protected` = list(FALSE, 14, pa_pal)))
-
-names(overlay_group_cache) <- c("KBA", "Protected")

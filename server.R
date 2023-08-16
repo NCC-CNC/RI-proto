@@ -1,11 +1,10 @@
-
-# Define server logic required to draw a histogram
+# SERVER.R
 function(input, output, session) {
   
-  # make weights df reactive
+  # Make weights df reactive
   weights_tbl <- reactiveVal(weights_tbl)
   
-  # init map
+  ## Init map
   output$RI_MAP <- renderLeaflet({
     leaflet() %>%
       addTiles() %>%
@@ -13,29 +12,10 @@ function(input, output, session) {
                   radius = 5,
                   group = "Points",
                   popup = 
-                    paste0("<b>RI: </b>", pts_wgs$RI 
-                           # "<hr>",
-                           # "<b>Critical Habitat: </b>", pts_wgs$ch, "<br>",
-                           # "<b>Endangered: </b>", pts_wgs$end, "<br>",
-                           # "<b>Special Concern: </b>", pts_wgs$spc, "<br>",
-                           # "<b>Threatened: </b>", pts_wgs$thr, "<br>", 
-                           # "<b>Endangered: </b>", pts_wgs$end, "<br>",
-                           # "<b>Carbon Potential: </b>", pts_wgs$carbon_p, "<br>",
-                           # "<b>Carbon Storage: </b>", pts_wgs$carbon_s, "<br>",
-                           # "<b>Climate Extremes: </b>", pts_wgs$climate_e, "<br>",
-                           # "<b>Climate Refugia: </b>", pts_wgs$climate_r, "<br>",
-                           # "<b>Climate Velocity: </b>", pts_wgs$climate_v, "<br>",
-                           # "<b>Connectivity: </b>", pts_wgs$connectivi, "<br>",
-                           # "<b>Freshwater: </b>", pts_wgs$freshwater, "<br>",
-                           # "<b>Recreation: </b>", pts_wgs$rec, "<br>",
-                           # "<b>Forest Landcover: </b>", pts_wgs$forset, "<br>",
-                           # "<b>Grassland: </b>", pts_wgs$grass, "<br>",
-                           # "<b>Wetland: </b>", pts_wgs$wet, "<br>",
-                           # "<b>Human Footprint: </b>", pts_wgs$hfi
-                           ),
+                    paste0("<b>RI: </b>", pts_wgs$RI),
                   color = "#2b8cbe") %>%
       hideGroup("Points") %>%
-      # RI
+      ## ri
       addRasterImage(
         raster(RI), 
         colors = RI_pal,
@@ -48,30 +28,31 @@ function(input, output, session) {
                 title="values",
                 layerId="ri-legend",
                 labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE))) %>%
-      ## KBA
+      ## kba
       addRasterImage(
         raster(RI_READY[[13]]),
         colors = c('#00000000','#ef3b2c'),
         group = "KBA") %>%
       hideGroup("KBA") %>%
-      # Protected
+      ## protected
       addRasterImage(
         raster(pa),
         colors = pa_pal,
         method = "ngb",
         group = "Protected") %>%
       hideGroup("Protected") %>%
-      # Layer controls
+      ## layer controls
       addLayersControl(
         overlayGroups = c("Protected", "KBA", "Points"),
-        baseGroups = c("Resilience Index", 
-                       "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
-                       "Carbon Potential", "Carbon Storage",
-                       "Climate Extremes", "Climate Refugia", "Climate Velocity",
-                       "Connectivity", 
-                       "Freshwater Provision", "Recreation", 
-                       "Forest Landcover", "Grassland", "Wetland",
-                       "Human Footprint Index", "Off"),
+        baseGroups = c(
+          "Resilience Index", 
+          "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
+          "Carbon Potential", "Carbon Storage",
+          "Climate Extremes", "Climate Refugia", "Climate Velocity",
+          "Connectivity", 
+          "Freshwater Provision", "Recreation", 
+          "Forest Landcover", "Grassland", "Wetland",
+          "Human Footprint Index", "Off"),
         options = layersControlOptions(collapsed = FALSE)) %>%
       htmlwidgets::onRender("
       function(el, x) {
@@ -81,22 +62,22 @@ function(input, output, session) {
             Shiny.onInputChange('RI_MAP_tile', e.layer.groupname)
         })
     }")
-      
   })
   
-  # update map with themes
+  # Update map (lazy load base group features)
   observeEvent(input$RI_MAP_tile, {
-    # add map spinner
+    
+    ## add map spinner
     shinyjs::runjs(
      "const spinner = document.querySelector('.spinner');
      spinner.style.display = 'block'")
     
-    # remove legend if off
+    ## remove legend if off
     if (input$RI_MAP_tile == "Off") {
       leafletProxy("RI_MAP") %>%
         removeControl("ri-legend")
     } else {
-      # add legend based on layer
+      ## add legend based on layer
       leafletProxy("RI_MAP") %>%
         removeControl("ri-legend") %>%
         addLegend(pal=base_group_cache[[input$RI_MAP_tile]][4][[1]], 
@@ -107,11 +88,12 @@ function(input, output, session) {
                   layerId="ri-legend",
                   labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
     }
-    # lazy load
+    
+    ## lazy load
     if (!base_group_cache[[input$RI_MAP_tile]][1][[1]]) {
-      # update variable to TRUE
+      ## update variable to TRUE
       base_group_cache[[input$RI_MAP_tile]][1][[1]] <<- TRUE
-      # update map
+      ## update map
       leafletProxy("RI_MAP") %>%
       addRasterImage(
            raster(RI_READY[[base_group_cache[[input$RI_MAP_tile]][2][[1]]]]),
@@ -120,7 +102,7 @@ function(input, output, session) {
          showGroup(input$RI_MAP_tile)
     }
     
-    # remove spinner
+    ## remove spinner
     shinyjs::runjs(
       "const spinner = document.querySelector('.spinner');
       spinner.style.display = 'none'")  
@@ -151,12 +133,12 @@ function(input, output, session) {
   # Update RI: RI equation
   observeEvent(input$ri_update, {
     
-    # add map spinner
+    ## add map spinner
     shinyjs::runjs(
       "const spinner = document.querySelector('.spinner');
      spinner.style.display = 'block'")
     
-  # update weights table
+  ## update weights table
   weight_values <- c(input$kba, input$ch, 
                input$range_end, input$range_spc, input$range_thr,
                input$carbon_p, input$carbon_s, 
@@ -165,7 +147,8 @@ function(input, output, session) {
                input$forest, input$grass, input$wet,
                input$pa, input$hfi)
    weights_tbl(weights_tbl() %>% mutate(WEIGHTS = weight_values))
-    
+  
+  ## build RI  
   RI <<- (
      (RI_READY$W_Carbon_potential  * input$carbon_p) # carbon potential
     + (RI_READY$W_Carbon_storage * input$carbon_s)  # + carbon storage
@@ -186,10 +169,10 @@ function(input, output, session) {
     + (RI_READY$ECCC_SAR_THR_N * input$range_thr) # + range map THR
     + (RI_READY$T_LC_Wetlands * input$wet) # + wetland
   )
-  
+  ## scale RI
   RI <<- normalize_between_0_and_1(RI)
   
-  # Update map
+  ## update map
   leafletProxy("RI_MAP") %>%
     removeImage("RI") %>%
     addRasterImage(
@@ -197,16 +180,16 @@ function(input, output, session) {
       colors = RI_pal,
       group = "Resilience Index")
   
-  # Extract points
+  ## extract points
   ri_df <- exactextractr::exact_extract(RI, pts_buf, "mean", force_df = TRUE) %>%
     rename("RI" = mean) %>%
     mutate(ID = row_number()) %>%
     mutate(RI = round(RI, 4))
   
-  # Replace value
+  ## replace value
   pts_wgs['RI'] <- ri_df['RI']
   
-  # Update points
+  ## update points
   leafletProxy("RI_MAP") %>%
     removeGlPoints("RI_Points") %>%
     addGlPoints(data = pts_wgs,
@@ -217,14 +200,14 @@ function(input, output, session) {
                 color = "#2b8cbe") %>%
     showGroup("Points")
   
-  # remove spinner
+  ## remove spinner
   shinyjs::runjs(
     "const spinner = document.querySelector('.spinner');
       spinner.style.display = 'none'")    
   
  })
   
-  # equation text for download
+  # Equation text for download
   RI_equ <- reactive({ as.character(
     paste0(
       "(key biodiversity areas * ", input$kba, ")",
@@ -248,24 +231,28 @@ function(input, output, session) {
     )) 
   })
 
-  # RI weight tally
+  # RI positive weight tally
   output$pos_weights <-  renderText({
-    
+    ## list of positive weights
     positive_weight_tally <- (input$kba + input$ch + input$range_end + input$range_spc +
       input$range_thr + input$carbon_p + input$carbon_s +
       input$climate_r + input$climate_v + input$connect + input$freshwater +
       input$rec + input$forest + input$grass + input$wet + input$pa) 
-  
+    ## translate to HTML
     HTML(paste0("<b> Positive Weight tally:</b> ", positive_weight_tally))
   })
   
+  # RI negative weight tally
   output$neg_weights <-  renderText({ 
+    ## list of negative weights
     negative_weight_tally <- -input$hfi + -input$climate_e
+    ## translate to HTML
     HTML(paste0("<b>Negative Weight tally:</b> ", negative_weight_tally))
   })    
   
   # RI equation for display
   output$equation <-  renderText({
+    ## positive weights
     positive_ri_inputs <- list(
       list("feature" = "key biodiversity areas", "weight" = input$kba, "class" = "var-bio"),
       list("feature" = "critical habitat", "weight" = input$ch, "class" = "var-bio"),
@@ -285,14 +272,17 @@ function(input, output, session) {
       list("feature" = "existing conservation", "weight" = input$pa, "class" = "var-protection")
       )
     
+    ## negative weights
     negative_ri_inputs <- list(
       list("feature" = "climate extremes", "weight" = input$climate_e, "class" = "var-climate"),
       list("feature" = "human footprint", "weight" = input$hfi, "class" = "var-threat")
     )  
     
+    ## sort by weight
     sorted_p <- positive_ri_inputs[order(-sapply(positive_ri_inputs, function(x) x$weight))]
     sorted_n <- negative_ri_inputs[order(-sapply(negative_ri_inputs, function(x) x$weight))]
     
+    ## translate to HTML
     HTML(paste0(
       "(<p class=", sorted_p[[1]]$class, ">", sorted_p[[1]]$feature, "</p> * <span>", sorted_p[[1]]$weight, "</span>)",
       " + (<p class=", sorted_p[[2]]$class, ">", sorted_p[[2]]$feature, "</p> * <span>", sorted_p[[2]]$weight, "</span>)",
@@ -315,7 +305,7 @@ function(input, output, session) {
     ))
   })
   
-    # Download RI
+  # Download RI
   observe(
     download_SERVER(id = "download_mod1", RI = RI, weights_tbl = weights_tbl)
   )
@@ -324,13 +314,15 @@ function(input, output, session) {
   toggleModal(session, modalId="info-modal", toggle="close")
   
   # Tool tips
+  ## RI reset button
   addTooltip(session, id = "ri_reset", title = "Reset weights back to CP&P Recommendation",
              placement = "top", trigger = "hover")
-  
+  ## RI update button
   addTooltip(session, id = "ri_update", title = "Update RI using new weights",
              placement = "top", trigger = "hover")
-  
+  ## info button
   addTooltip(session, id = "info", title = "View PowerPoint",
              placement = "bottom", trigger = "hover")  
-  
+
+# CLOSE SERVER    
 }

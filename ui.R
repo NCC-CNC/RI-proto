@@ -1,11 +1,11 @@
-
+# UI.R
 fluidPage(
   useShinyjs(),
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
   ),  
 
-    # Sidebar with a slider input for number of bins
+    # SIDE PANNEL
     sidebarLayout(
         sidebarPanel(class="ri-builder",
           fluidRow(class="ri-header", 
@@ -39,7 +39,7 @@ fluidPage(
             column(4,  numericInput("climate_r", label = "Refugia", value = 6, min = 0, max = 50)), 
             column(4,  numericInput("climate_v", label = "Velocity", value = 6, min = 0, max = 50))
           )),
-          # Connectivity / Freshwater
+          # Connectivity / eServices
           tags$div(class="theme connectivity",
           fluidRow(
             column(4, h4("Connectivity")),
@@ -76,7 +76,7 @@ fluidPage(
              column(6, htmlOutput("neg_weights"))
            )),
           
-          # Update Map
+          # Reset and update buttons
           tags$div(class="ri-btn",
           fluidRow(
             column(4, actionButton("ri_reset", "RESET RI", width = "100%")),
@@ -86,7 +86,7 @@ fluidPage(
         # CLOSE SIDEBAR PANNEL 
         ),
         
-        # Show a plot of the generated distribution
+        # MAIN PANEL
         mainPanel(
           # Info modal
           bsModal(id="info-modal", title="RESILEIENCE INDEX GUIDE", trigger="info", size = "large",
@@ -98,6 +98,7 @@ fluidPage(
           withSpinner(proxy.height = "calc(100vh - 200px)", color = "#33862B",
           leafletOutput(outputId = "RI_MAP", height = "calc(100vh - 200px)", width = "100%"))),
           
+          # Download RI button
           absolutePanel(
             top = 0,
             left = 40,
