@@ -35,7 +35,7 @@ pts_wgs <- st_transform(pts, crs = 4326) %>%
 
 # Rasters for Map
 ## RI
-RI <- rast("data/_RI/RI.tif")
+RI <<- rast("data/_RI/RI.tif")
 ## Protection
 pa <- RI_READY[[14]] 
 pa[pa == 0] <- NA 

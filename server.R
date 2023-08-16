@@ -166,7 +166,7 @@ function(input, output, session) {
                input$pa, input$hfi)
    weights_tbl(weights_tbl() %>% mutate(WEIGHTS = weight_values))
     
-  RI <- (
+  RI <<- (
      (RI_READY$W_Carbon_potential  * input$carbon_p) # carbon potential
     + (RI_READY$W_Carbon_storage * input$carbon_s)  # + carbon storage
     + (RI_READY$ECCC_CH_ALL_HA_SUM0 * input$ch)  # + critical habitat
@@ -186,8 +186,8 @@ function(input, output, session) {
     + (RI_READY$ECCC_SAR_THR_N * input$range_thr) # + range map THR
     + (RI_READY$T_LC_Wetlands * input$wet) # + wetland
   )
-
-  RI <- normalize_between_0_and_1(RI)
+  
+  RI <<- normalize_between_0_and_1(RI)
   
   # Update map
   leafletProxy("RI_MAP") %>%
