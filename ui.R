@@ -7,12 +7,14 @@ fluidPage(
 
     # SIDE PANNEL
     sidebarLayout(
+      # Sidebar header
         sidebarPanel(class="ri-builder",
           fluidRow(class="ri-header", 
             column(11, h2(class="ri-title", "RESILIENCE INDEX BUILDER")),
             column(1, actionButton(class="info-btn", inputId="info", label="", icon = icon('info')))
           ),
-          # Biodiversity
+          # Weight builder:
+          ## biodiversity
           tags$div(class="theme biodiversity",
           h4("Biodiversity"),
           fluidRow(
@@ -24,14 +26,14 @@ fluidPage(
             column(4,  numericInput("range_spc", label = "Special Concern", value = 6, min = 0, max = 50)),
             column(4,  numericInput("range_thr", label = "Threatened", value = 7, min = 0, max = 50))
           )),             
-          # Carbon
+          ## carbon
           tags$div(class="theme carbon",
           h4("Carbon"),
           fluidRow(
             column(6,  numericInput("carbon_p", label = "Potential", value = 5, min = 0, max = 50)),
             column(6,  numericInput("carbon_s", label = "Storage", value = 5, min = 0, max = 50))
           )),
-          # Climate
+          ## climate
           tags$div(class="theme climate",
           h4("Climate"),
           fluidRow(
@@ -39,7 +41,7 @@ fluidPage(
             column(4,  numericInput("climate_r", label = "Refugia", value = 6, min = 0, max = 50)), 
             column(4,  numericInput("climate_v", label = "Velocity", value = 6, min = 0, max = 50))
           )),
-          # Connectivity / eServices
+          ## connectivity / eServices
           tags$div(class="theme connectivity",
           fluidRow(
             column(4, h4("Connectivity")),
@@ -50,7 +52,7 @@ fluidPage(
             column(4,  numericInput("freshwater", label = "Freshwater Provision", value = 1, min = 0, max = 50)),
             column(4,  numericInput("rec", label = "Recreation", value = 1, min = 0, max = 50)), 
           )),
-          # Habitat
+          ## habitat
           tags$div(class="theme habitat",
           h4("Habitat"),
           fluidRow(
@@ -58,7 +60,7 @@ fluidPage(
             column(4,  numericInput("grass", label = "Grassland", value = 2, min = 0, max = 50)), 
             column(4,  numericInput("wet", label = "Wetland", value = 2, min = 0, max = 50)), 
           )),
-          # Protection / Threat
+          ## protection / threat
           tags$div(class="theme threat",
            fluidRow(
              column(6, h4("Protection")),
