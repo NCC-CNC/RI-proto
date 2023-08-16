@@ -75,36 +75,3 @@ normalize_between_0_and_1 <- function(rast) {
   normalized_data <- round(normalized_data, 2) # round to 2 decimal places
   return(normalized_data)
 }
-
-# Layer cache (for lazy loading)
-base_group_cache <- list(
-  (`Resilience Index` = c(TRUE, 1, RI_pal, RI_lpal)),
-  (`Critical Habitat` = c(FALSE, 3, ch_pal, ch_lpal)), 
-  (`Range Map: Endangered` = c(FALSE, 8, sar_pal, sar_lpal)),
-  (`Range Map: Special Concern` = c(FALSE, 16, sar_pal, sar_lpal)), 
-  (`Range Map: Threatened` = c(FALSE, 17, sar_pal, sar_lpal)),
-  (`Carbon Potential` = c(FALSE, 1, carbon_pal, carbon_lpal)), 
-  (`Carbon Storage` = c(FALSE, 2, carbon_pal, carbon_lpal)),
-  (`Climate Extremes` = c(FALSE, 4, climate_pal, climate_lpal)),
-  (`Climate Refugia` = c(FALSE, 5, climate_pal, climate_lpal)),
-  (`Climate Velocity` = c(FALSE, 6, climate_pal, climate_lpal)),
-  (`Connectivity` = c(FALSE, 7, connectivity_pal, connectivity_lpal)),
-  (`Freshwater Provision` = c(FALSE, 10, eservice_pal, eservice_lpal)),
-  (`Recreation` = c(FALSE, 15, eservice_pal, eservice_lpal)), 
-  (`Forest Landcover` = c(FALSE, 9, forest_pal, forest_lpal)),
-  (`Grassland` = c(FALSE, 11, grass_pal, grass_lpal)),
-  (`Wetland` = c(FALSE, 18, wet_pal, wet_lpal)),
-  (`Human Footprint Index` = c(FALSE, 12, hfi_pal, hfi_lpal)), 
-  (`Off` = TRUE)
-)
-## update names
-names(base_group_cache) <- c(
-  "Resilience Index", 
-  "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
-  "Carbon Potential", "Carbon Storage",
-  "Climate Extremes", "Climate Refugia", "Climate Velocity",
-  "Connectivity", 
-  "Freshwater Provision", "Recreation", 
-  "Forest Landcover", "Grassland", "Wetland",
-  "Human Footprint Index", "Off"
-)
