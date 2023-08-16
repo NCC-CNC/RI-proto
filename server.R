@@ -187,7 +187,7 @@ function(input, output, session) {
     + (RI_READY$T_LC_Wetlands * input$wet) # + wetland
   )
 
-  RI <<-  normalize_between_0_and_1(RI)
+  RI <- normalize_between_0_and_1(RI)
   
   # Update map
   leafletProxy("RI_MAP") %>%
@@ -266,25 +266,52 @@ function(input, output, session) {
   
   # RI equation for display
   output$equation <-  renderText({
+    positive_ri_inputs <- list(
+      list("feature" = "key biodiversity areas", "weight" = input$kba, "class" = "var-bio"),
+      list("feature" = "critical habitat", "weight" = input$ch, "class" = "var-bio"),
+      list("feature" = "endangered specices", "weight" = input$range_end, "class" = "var-bio"),
+      list("feature" = "special concern species", "weight" = input$range_spc, "class" = "var-bio"),
+      list("feature" = "threatened species", "weight" = input$range_thr, "class" = "var-bio"),
+      list("feature" = "carbon potential", "weight" = input$carbon_p, "class" = "var-carbon"),
+      list("feature" = "carbon storage", "weight" = input$carbon_s, "class" = "var-carbon"),
+      list("feature" = "climate refugia", "weight" = input$climate_r, "class" = "var-climate"),
+      list("feature" = "climate velocity", "weight" = input$climate_v, "class" = "var-climate"),
+      list("feature" = "connectivity", "weight" = input$connect, "class" = "var-connect"),
+      list("feature" = "freshwater provision", "weight" = input$freshwater, "class" = "var-eservice"),
+      list("feature" = "recreation", "weight" = input$rec, "class" = "var-eservice"),
+      list("feature" = "forest landcover", "weight" = input$forest, "class" = "var-habitat"),
+      list("feature" = "grassland", "weight" = input$grass, "class" = "var-habitat"),
+      list("feature" = "wetland", "weight" = input$wet, "class" = "var-habitat"),
+      list("feature" = "existing conservation", "weight" = input$pa, "class" = "var-protection")
+      )
+    
+    negative_ri_inputs <- list(
+      list("feature" = "climate extremes", "weight" = input$climate_e, "class" = "var-climate"),
+      list("feature" = "human footprint", "weight" = input$hfi, "class" = "var-threat")
+    )  
+    
+    sorted_p <- positive_ri_inputs[order(-sapply(positive_ri_inputs, function(x) x$weight))]
+    sorted_n <- negative_ri_inputs[order(-sapply(negative_ri_inputs, function(x) x$weight))]
+    
     HTML(paste0(
-      "(<p class=var-bio>key biodiversity areas</p> * <span>", input$kba, "</span>) ",
-      " + (<p class=var-bio>critical habitat</p> * <span>",  input$ch, "</span>)",
-      " + (<p class=var-bio>endangered specices</p> * <span>", input$range_end, "</span>)",
-      " + (<p class=var-bio>special concern species</p> * <span>", input$range_spc, "</span>)",
-      " + (<p class=var-bio>threatened species</p> * <span>", input$range_thr, "</span>)",
-      " + (<p class=var-carbon>carbon potential</p> * <span>", input$carbon_p, "</span>)",
-      " + (<p class=var-carbon>carbon storage</p> * <span>", input$carbon_s, "</span>)",
-      " <p class=minus>-</p> (<p class=var-climate>climate extremes</p> * <span>", input$climate_e, "</span>)",
-      " + (<p class=var-climate>climate refugia</p> * <span>", input$climate_r, "</span>)",
-      " + (<p class=var-climate>climate velocity</p> * <span>", input$climate_v, "</span>)",
-      " + (<p class=var-connect>connectivity</p> * <span>", input$connect, "</span>)",
-      " + (<p class=var-eservice>freshwater provision</p> * <span>", input$freshwater, "</span>)",
-      " + (<p class=var-eservice>recreation</p> * <span>", input$rec, "</span>)",
-      " + (<p class=var-habitat>forest landcover</p> * <span>", input$forest, "</span>)",
-      " + (<p class=var-habitat>grassland</p> * <span>", input$grass, "</span>)",
-      " + (<p class=var-habitat>wetland </p> * <span>", input$wet, "</span>)",
-      " + (<p class=var-protection>existing conservation </p> * <span>", input$pa, "</span>)",
-      " <p class=minus>-</p> (<p class=var-threat>human footprint index </p> * <span>", input$hfi, "</span>)"
+      "(<p class=", sorted_p[[1]]$class, ">", sorted_p[[1]]$feature, "</p> * <span>", sorted_p[[1]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[2]]$class, ">", sorted_p[[2]]$feature, "</p> * <span>", sorted_p[[2]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[3]]$class, ">", sorted_p[[3]]$feature, "</p> * <span>", sorted_p[[3]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[4]]$class, ">", sorted_p[[4]]$feature, "</p> * <span>", sorted_p[[4]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[5]]$class, ">", sorted_p[[5]]$feature, "</p> * <span>", sorted_p[[5]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[6]]$class, ">", sorted_p[[6]]$feature, "</p> * <span>", sorted_p[[6]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[7]]$class, ">", sorted_p[[7]]$feature, "</p> * <span>", sorted_p[[7]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[8]]$class, ">", sorted_p[[8]]$feature, "</p> * <span>", sorted_p[[8]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[9]]$class, ">", sorted_p[[9]]$feature, "</p> * <span>", sorted_p[[9]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[10]]$class, ">", sorted_p[[10]]$feature, "</p> * <span>", sorted_p[[10]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[11]]$class, ">", sorted_p[[11]]$feature, "</p> * <span>", sorted_p[[11]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[12]]$class, ">", sorted_p[[12]]$feature, "</p> * <span>", sorted_p[[12]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[13]]$class, ">", sorted_p[[13]]$feature, "</p> * <span>", sorted_p[[13]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[14]]$class, ">", sorted_p[[14]]$feature, "</p> * <span>", sorted_p[[14]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[15]]$class, ">", sorted_p[[15]]$feature, "</p> * <span>", sorted_p[[15]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[16]]$class, ">", sorted_p[[16]]$feature, "</p> * <span>", sorted_p[[16]]$weight, "</span>)",
+      " - (<p class=", sorted_n[[1]]$class, ">", sorted_n[[1]]$feature, "</p> * <span>", sorted_n[[1]]$weight, "</span>)",
+      " - (<p class=", sorted_n[[2]]$class, ">", sorted_n[[2]]$feature, "</p> * <span>", sorted_n[[2]]$weight, "</span>)"
     ))
   })
   
