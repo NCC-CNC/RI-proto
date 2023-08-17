@@ -92,7 +92,7 @@ fluidPage(
         # MAIN PANEL
         mainPanel(
           # Info modal
-          bsModal(id="info-modal", title="RESILEIENCE INDEX GUIDE", trigger="info", size = "large",
+          bsModal(id="info-modal", title="RESILIENCE INDEX GUIDE", trigger="info", size = "large",
             tags$iframe(style="height:600px; width:100%", src="RI_GUIDE.pdf")),
           
           # Map
