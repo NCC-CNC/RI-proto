@@ -19,6 +19,9 @@ a {
   color: #2D602E !important;
   font-weight: 900;
 }
+.ri-title span {
+  color: #33862B;
+}
 
 .info-btn {
   border: 1px solid black;
