@@ -10,7 +10,7 @@ fluidPage(
       # Sidebar header
         sidebarPanel(class="ri-builder",
           fluidRow(class="ri-header", 
-            column(11, h2(class="ri-title", "RESILIENCE INDEX BUILDER")),
+            column(11, h2(class="ri-title", tags$img(class="logo", src = "ncc_logo.png", width = "8%"), HTML("RESILIENCE INDEX <span>BUILDER<span/>"))),
             column(1, actionButton(class="info-btn", inputId="info", label="", icon = icon('info')))
           ),
           

@@ -26,13 +26,13 @@ function(input, output, session) {
   ## update names
   names(base_group_cache) <- c(
     "Resilience Index", 
-    "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
+    "Critical Habitat", "Endangered", "Special Concern", "Threatened",
     "Carbon Potential", "Carbon Storage",
     "Climate Extremes", "Climate Refugia", "Climate Centrality",
     "Connectivity", 
     "Freshwater Provision", "Recreation", 
     "Forest Landcover", "Grassland", "Wetland",
-    "Human Footprint Index", "Off"
+    "Human Footprint", "Off"
   )  
   
   # Make weights df reactive
@@ -81,13 +81,13 @@ function(input, output, session) {
         overlayGroups = c("Protected", "KBA", "Points"),
         baseGroups = c(
           "Resilience Index", 
-          "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
+          "Critical Habitat", "Endangered", "Special Concern", "Threatened",
           "Carbon Potential", "Carbon Storage",
           "Climate Extremes", "Climate Refugia", "Climate Centrality",
           "Connectivity", 
           "Freshwater Provision", "Recreation", 
           "Forest Landcover", "Grassland", "Wetland",
-          "Human Footprint Index", "Off"),
+          "Human Footprint", "Off"),
         options = layersControlOptions(collapsed = FALSE)) %>%
       htmlwidgets::onRender("
       function(el, x) {
