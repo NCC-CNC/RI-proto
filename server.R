@@ -28,7 +28,7 @@ function(input, output, session) {
     "Resilience Index", 
     "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
     "Carbon Potential", "Carbon Storage",
-    "Climate Extremes", "Climate Refugia", "Climate Velocity",
+    "Climate Extremes", "Climate Refugia", "Climate Centrality",
     "Connectivity", 
     "Freshwater Provision", "Recreation", 
     "Forest Landcover", "Grassland", "Wetland",
@@ -83,7 +83,7 @@ function(input, output, session) {
           "Resilience Index", 
           "Critical Habitat", "Range Map: Endangered", "Range Map: Special Concern", "Range Map: Threatened",
           "Carbon Potential", "Carbon Storage",
-          "Climate Extremes", "Climate Refugia", "Climate Velocity",
+          "Climate Extremes", "Climate Refugia", "Climate Centrality",
           "Connectivity", 
           "Freshwater Provision", "Recreation", 
           "Forest Landcover", "Grassland", "Wetland",
@@ -190,7 +190,7 @@ function(input, output, session) {
     + (RI_READY$ECCC_CH_ALL_HA_SUM0 * input$ch)  # + critical habitat
     - (RI_READY$W_Climate_extremes * input$climate_e)  # - climate extremes
     + (RI_READY$W_Climate_refugia * input$climate_r)  # + climate refugia
-    + (RI_READY$W_Climate_shortest_path * input$climate_v)  # + climate velocity
+    + (RI_READY$W_Climate_shortest_path * input$climate_v)  # + climate velocity (centrality)
     + (RI_READY$W_Connectivity * input$connect)  # + connectivity
     + (RI_READY$ECCC_SAR_END_N * input$range_end) # + range map END
     + (RI_READY$`T_LC_Forest-lc` * input$forest) # + forest land cover
@@ -256,7 +256,7 @@ function(input, output, session) {
       " + (carbon storage * ", input$carbon_s, ")",
       " - (climate extremes * ", input$climate_e, ")",
       " + (climate refugia * ", input$climate_r, ")",
-      " + (climate velocity * ", input$climate_v, ")",
+      " + (climate centrality * ", input$climate_v, ")",
       " + (connectivity * ", input$connect, ")",
       " + (freshwater provision * ", input$freshwater, ")",
       " + (recreation * ", input$rec, ")",
@@ -299,7 +299,7 @@ function(input, output, session) {
       list("feature" = "carbon potential", "weight" = input$carbon_p, "class" = "var-carbon"),
       list("feature" = "carbon storage", "weight" = input$carbon_s, "class" = "var-carbon"),
       list("feature" = "climate refugia", "weight" = input$climate_r, "class" = "var-climate"),
-      list("feature" = "climate velocity", "weight" = input$climate_v, "class" = "var-climate"),
+      list("feature" = "climate centrality", "weight" = input$climate_v, "class" = "var-climate"),
       list("feature" = "connectivity", "weight" = input$connect, "class" = "var-connect"),
       list("feature" = "freshwater provision", "weight" = input$freshwater, "class" = "var-eservice"),
       list("feature" = "recreation", "weight" = input$rec, "class" = "var-eservice"),
