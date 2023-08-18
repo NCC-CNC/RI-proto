@@ -77,7 +77,6 @@ normalize_between_0_and_1 <- function(rast) {
 }
 
 # links
-
 ch_link <- "https://open.canada.ca/data/en/dataset/47caa405-be2b-4e9e-8f53-c478ade2ca74"
 sar_link <- "https://open.canada.ca/data/en/dataset/d00f8e8c-40c4-435a-b790-980339ce3121"
 climate_v_link <- "https://adaptwest.databasin.org/pages/climate-connectivity-north-america/"
