@@ -14,7 +14,27 @@ library(xlsx)
 library(shinycssloaders)
 
 # Rasters for Equation
-RI_READY <- rast(list.files("data/_RIREADY",  pattern = ".tif$", full.names = TRUE)) 
+kba <- rast("data/_RIREADY/kba.tif")              # key biodiversity areas
+ch <- rast("data/_RIREADY/ch.tif")                # critical habitat
+sar_rich <- rast("data/_RIREADY/sar_rich.tif")    # SAR richness
+end_rich <- rast("data/_RIREADY/end_rich.tif")    # END richness
+biod_rich <- rast("data/_RIREADY/biod_rich.tif")  # BIOD richness
+sar_goal <- rast("data/_RIREADY/sar_goal.tif")    # SAR goal
+end_goal <- rast("data/_RIREADY/end_goal.tif")    # END goal
+biod_goal <- rast("data/_RIREADY/biod_goal.tif")  # BIOD goal
+carbon_p <-  rast("data/_RIREADY/carbon_p.tif")   # carbon potential
+carbon_s <-  rast("data/_RIREADY/carbon_s.tif")   # carbon storage
+climate_c <-  rast("data/_RIREADY/climate_c.tif") # climate centrality
+climate_e <-  rast("data/_RIREADY/climate_e.tif") # climate extremes
+climate_r <-  rast("data/_RIREADY/climate_r.tif") # climate refugia
+connect <- rast("data/_RIREADY/connectivity.tif") # connectivity
+forest <- rast("data/_RIREADY/forest.tif")        # forest
+grass <- rast("data/_RIREADY/grass.tif")          # grassland
+wet <- rast("data/_RIREADY/wet.tif")              # wetland
+river <- rast("data/_RIREADY/river.tif")          # rivers
+pa <- rast("data/_RIREADY/pa.tif")                # existing conservation
+hfi <- rast("data/_RIREADY/hfi.tif")               # hfi
+  
 
 # Weights excel
 weights_tbl <- read_xlsx("data/WEIGHTS.xlsx")
@@ -37,8 +57,8 @@ pts_wgs <- st_transform(pts, crs = 4326) %>%
 ## RI
 RI <<- rast("data/_RI/RI.tif")
 ## protection
-pa <- RI_READY[[14]] 
-pa[pa == 0] <- NA 
+pa_to_map <- pa
+pa_to_map[pa_to_map== 0] <- NA 
 
 # Palettes for map
 RI_pal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent")
@@ -63,6 +83,8 @@ grass_pal <- colorNumeric(palette = "Oranges", domain = c(0, 1), na.color = "tra
 grass_lpal <- colorNumeric(palette = "Oranges", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 wet_pal <- colorNumeric(palette = "BuPu", domain = c(0, 1), na.color = "transparent")
 wet_lpal <- colorNumeric(palette = "BuPu", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
+riv_pal <- colorNumeric(palette = "Blues", domain = c(0, 1), na.color = "transparent")
+riv_lpal <- colorNumeric(palette = "Blues", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 pa_pal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent")
 pa_lpal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent", reverse = TRUE)
 

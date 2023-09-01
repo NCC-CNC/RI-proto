@@ -2,9 +2,13 @@ a {
   color: #333;
 }
 
-.ri-builder {
-  height: calc(100vh - 25px); 
-  overflow-y: scroll;
+.weight-builder {
+  height: calc(100vh - 200px);
+  overflow-y: auto;
+  overflow-x: hidden !important;
+  padding-right: 15px;
+  margin-right: -15px;
+  scrollbar-color: #2D602E  #33862B;
 }
 
 .ri-header {
@@ -126,6 +130,7 @@ a.leaflet-control-zoom-out {
 }
 
 .var-threat,
+#climate_e-label,
 #hfi-label {
   background-color: #fb8072;
 }

@@ -15,61 +15,67 @@ fluidPage(
           ),
           
           # Weight builder:
+          tags$div(class="weight-builder",
           ## biodiversity
           tags$div(class="theme biodiversity",
           h4("Biodiversity"),
           fluidRow(
-            column(6,  numericInput("kba", label = a("Key Biodiversity Areas", href=kba_link, target="_blank"), value = 15, min = 0, max = 50)),
-            column(6,  numericInput("ch", label = a("Critical Habitat", href=ch_link, target="_blank"),  value = 9, min = 0, max = 50))
+            column(6,  numericInput("kba", label = a("Key Biodiversity Areas", href=kba_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(6,  numericInput("ch", label = a("Species at Risk, Critical Habitat", href=ch_link, target="_blank"),  value = 1, min = 0, max = 50)),
           ),
           fluidRow(
-            column(4,  numericInput("range_end", label = a("Endangered", href=sar_link, target="_blank"), value = 8, min = 0, max = 50)),
-            column(4,  numericInput("range_spc", label = a("Special Concern", href=sar_link, target="_blank"), value = 6, min = 0, max = 50)),
-            column(4,  numericInput("range_thr", label = a("Threatened", href=sar_link, target="_blank"), value = 7, min = 0, max = 50))
-          )),             
+            column(4,  numericInput("sar_rich", label = a("Species at Risk, Richness", href=sar_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(4,  numericInput("end_rich", label = a("Endemic Species, Richness", href=sar_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(4,  numericInput("biod_rich", label = a("Common Species, Richness ", href=sar_link, target="_blank"), value = 1, min = 0, max = 50))
+          ),
+          fluidRow(
+            column(4,  numericInput("sar_goal", label = a("Species at Risk, Goal", href=sar_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(4,  numericInput("end_goal", label = a("Endemic Species, Goal", href=sar_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(4,  numericInput("biod_goal", label = a("Common Species, Goal", href=sar_link, target="_blank"), value = 1, min = 0, max = 50))
+          )),
           ## carbon
           tags$div(class="theme carbon",
           h4("Carbon"),
           fluidRow(
-            column(6,  numericInput("carbon_p", label = a("Potential", href=carbon_p_link, target="_blank"), value = 5, min = 0, max = 50)),
-            column(6,  numericInput("carbon_s", label = a("Storage", href=carbon_s_link, target="_blank"), value = 5, min = 0, max = 50))
+            column(6,  numericInput("carbon_p", label = a("Potential", href=carbon_p_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(6,  numericInput("carbon_s", label = a("Storage", href=carbon_s_link, target="_blank"), value = 1, min = 0, max = 50))
           )),
-          ## climate
-          tags$div(class="theme climate",
-          h4("Climate"),
+          
+          ## climate / connectivity
+          tags$div(class="theme",
           fluidRow(
-            column(4,  numericInput("climate_e", label = a("Extremes", href=climate_e_link, target="_blank"), value = 12, min = 0, max = 50)),
-            column(4,  numericInput("climate_r", label = a("Refugia", href=climate_r_link, target="_blank"),  value = 6, min = 0, max = 50)), 
-            column(4,  numericInput("climate_v", label = a("Centrality", href=climate_v_link, target="_blank"), value = 6, min = 0, max = 50))
-          )),
-          ## connectivity / eServices
-          tags$div(class="theme connectivity",
+           column(8, h4("Climate")),
+           column(4, h4("Connectivity")),
+           ),          
+          
+          tags$div(class="climate",
           fluidRow(
-            column(4, h4("Connectivity")),
-            column(8, h4("eServices")),
-          ),
-          fluidRow(
-            column(4,  numericInput("connect", label = a("Connectivity", href=connect_link, target="_blank"), value = 13, min = 0, max = 50)),
-            column(4,  numericInput("freshwater", label = a("Freshwater Provision", href=freshwater_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(4,  numericInput("rec", label = a("Recreation", href=rec_link, target="_blank"), value = 1, min = 0, max = 50)), 
-          )),
+            column(4,  numericInput("climate_r", label = a("Refugia", href=climate_r_link, target="_blank"),  value = 1, min = 0, max = 50)), 
+            column(4,  numericInput("climate_c", label = a("Centrality", href=climate_v_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(4,  numericInput("connect", label = a("Connectivity", href=connect_link, target="_blank"), value = 1, min = 0, max = 50))
+          ))),
+
           ## habitat
           tags$div(class="theme habitat",
           h4("Habitat"),
           fluidRow(
-            column(4,  numericInput("forest", label = a("Forest Landcover", href=forest_link, target="_blank"), value = 2, min = 0, max = 50)),
-            column(4,  numericInput("grass", label = a("Grassland", href=grass_link, target="_blank"), value = 2, min = 0, max = 50)), 
-            column(4,  numericInput("wet", label = a("Wetland", href=wet_link, target="_blank"), value = 2, min = 0, max = 50)), 
+            column(3,  numericInput("forest", label = a("Forest", href=forest_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(3,  numericInput("grass", label = a("Grassland", href=grass_link, target="_blank"), value = 1, min = 0, max = 50)), 
+            column(2,  numericInput("wet", label = a("Wetland", href=wet_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(2,  numericInput("river", label = a("Rivers", href=wet_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(2,  numericInput("shore", label = a("Shoreline", href=wet_link, target="_blank"), value = 1, min = 0, max = 50)),
           )),
+          
           ## protection / threat
           tags$div(class="theme threat",
            fluidRow(
-             column(6, h4("Protection")),
-             column(6, h4("Threats")),
+             column(4, h4("Protection")),
+             column(8, h4("Threats")),
            ),
            fluidRow(
-             column(6,  numericInput("pa", label = a("Existing Conservation", href=pa_link, target="_blank"), value = 12, min = 0, max = 50)),
-             column(6,  numericInput("hfi", label = a("Human Footprint Index", href=hfi_link, target="_blank"), value = 38, min = 0, max = 50)), 
+             column(4,  numericInput("pa", label = a("Existing Conservation", href=pa_link, target="_blank"), value = 1, min = 0, max = 50)),
+             column(4,  numericInput("hfi", label = a("Human Footprint Index", href=hfi_link, target="_blank"), value = 1, min = 0, max = 50)),
+             column(4,  numericInput("climate_e", label = a("Climate Extremes", href=climate_e_link, target="_blank"), value = 1, min = 0, max = 50))
            )),
           
           # Weight tally
@@ -77,7 +83,7 @@ fluidPage(
            fluidRow(
              column(6, htmlOutput("pos_weights")),
              column(6, htmlOutput("neg_weights"))
-           )),
+           ))),
           
           # Reset and update buttons
           tags$div(class="ri-btn",

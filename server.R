@@ -3,36 +3,40 @@ function(input, output, session) {
   
   # Layer cache (for lazy loading)
   base_group_cache <- list(
-    (`Resilience Index` = c(TRUE, 1, RI_pal, RI_lpal)),
-    (`Critical Habitat` = c(FALSE, 3, ch_pal, ch_lpal)), 
-    (`Range Map: Endangered` = c(FALSE, 8, sar_pal, sar_lpal)),
-    (`Range Map: Special Concern` = c(FALSE, 16, sar_pal, sar_lpal)), 
-    (`Range Map: Threatened` = c(FALSE, 17, sar_pal, sar_lpal)),
-    (`Carbon Potential` = c(FALSE, 1, carbon_pal, carbon_lpal)), 
-    (`Carbon Storage` = c(FALSE, 2, carbon_pal, carbon_lpal)),
-    (`Climate Extremes` = c(FALSE, 4, climate_pal, climate_lpal)),
-    (`Climate Refugia` = c(FALSE, 5, climate_pal, climate_lpal)),
-    (`Climate Velocity` = c(FALSE, 6, climate_pal, climate_lpal)),
-    (`Connectivity` = c(FALSE, 7, connectivity_pal, connectivity_lpal)),
-    (`Freshwater Provision` = c(FALSE, 10, eservice_pal, eservice_lpal)),
-    (`Recreation` = c(FALSE, 15, eservice_pal, eservice_lpal)), 
-    (`Forest Landcover` = c(FALSE, 9, forest_pal, forest_lpal)),
-    (`Grassland` = c(FALSE, 11, grass_pal, grass_lpal)),
-    (`Wetland` = c(FALSE, 18, wet_pal, wet_lpal)),
-    (`Human Footprint Index` = c(FALSE, 12, hfi_pal, hfi_lpal)), 
+    (`Resilience Index` = c(TRUE, RI, RI_pal, RI_lpal)),
+    (`Critical Habitat` = c(FALSE, ch, ch_pal, ch_lpal)), 
+    (`SAR Richness` = c(FALSE, sar_rich, sar_pal, sar_lpal)),
+    (`END Richness` = c(FALSE, end_rich, sar_pal, sar_lpal)), 
+    (`Common Richness` = c(FALSE, biod_rich, sar_pal, sar_lpal)),
+    (`SAR Goal` = c(FALSE, sar_goal, sar_pal, sar_lpal)), 
+    (`END Goal` = c(FALSE, end_goal, sar_pal, sar_lpal)),
+    (`Common Goal` = c(FALSE, biod_goal, sar_pal, sar_lpal)),
+    (`Carbon Potential` = c(FALSE, carbon_p, carbon_pal, carbon_lpal)),
+    (`Carbon Storage` = c(FALSE, carbon_s, carbon_pal, carbon_lpal)),
+    (`Climate Refugia` = c(FALSE, climate_r, climate_pal, climate_lpal)),
+    (`Climate Centrality` = c(FALSE, climate_c, climate_pal, climate_lpal)),
+    (`Connectivity` = c(FALSE, connect, connectivity_pal, connectivity_lpal)),
+    (`Forest` = c(FALSE, forest, forest_pal, forest_lpal)),
+    (`Grassland` = c(FALSE, grass, grass_pal, grass_lpal)),
+    (`Wetland` = c(FALSE, wet, wet_pal, wet_lpal)),
+    (`Rivers` = c(FALSE, river, riv_pal, riv_lpal)),
+    (`Human Footprint Index` = c(FALSE, hfi, hfi_pal, hfi_lpal)),
+    (`Climate Extremes` = c(FALSE, climate_e, climate_pal, climate_lpal)),
     (`Off` = TRUE)
   )
   
   ## update names
   names(base_group_cache) <- c(
     "Resilience Index", 
-    "Critical Habitat", "Endangered", "Special Concern", "Threatened",
+    "Critical Habitat", 
+    "SAR Richness", "END Richness", "Common Richness",
+    "SAR Goal", "END Goal", "Common Goal",
     "Carbon Potential", "Carbon Storage",
-    "Climate Extremes", "Climate Refugia", "Climate Centrality",
+    "Climate Refugia", "Climate Centrality",
     "Connectivity", 
-    "Freshwater Provision", "Recreation", 
-    "Forest Landcover", "Grassland", "Wetland",
-    "Human Footprint", "Off"
+    "Forest", "Grassland", "Wetland", "Rivers",
+    "Human Footprint", "Climate Extremes", 
+    "Off"
   )  
   
   # Make weights df reactive
@@ -46,8 +50,7 @@ function(input, output, session) {
                   radius = 5,
                   group = "Points",
                   layerId = "RI_Points",
-                  popup = 
-                    paste0("<b>RI: </b>", pts_wgs$RI),
+                  popup = paste0("<b>RI: </b>", pts_wgs$RI),
                   color = "#2b8cbe") %>%
       hideGroup("Points") %>%
       ## ri
@@ -65,13 +68,13 @@ function(input, output, session) {
                 labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE))) %>%
       ## kba
       addRasterImage(
-        raster(RI_READY[[13]]),
+        raster(kba),
         colors = c('#00000000','#ef3b2c'),
         group = "KBA") %>%
       hideGroup("KBA") %>%
       ## protected
       addRasterImage(
-        raster(pa),
+        raster(pa_to_map),
         colors = pa_pal,
         method = "ngb",
         group = "Protected") %>%
@@ -81,13 +84,16 @@ function(input, output, session) {
         overlayGroups = c("Protected", "KBA", "Points"),
         baseGroups = c(
           "Resilience Index", 
-          "Critical Habitat", "Endangered", "Special Concern", "Threatened",
+          "Critical Habitat", 
+          "SAR Richness", "END Richness", "Common Richness",
+          "SAR Goal", "END Goal", "Common Goal",
           "Carbon Potential", "Carbon Storage",
-          "Climate Extremes", "Climate Refugia", "Climate Centrality",
+          "Climate Refugia", "Climate Centrality",
           "Connectivity", 
-          "Freshwater Provision", "Recreation", 
-          "Forest Landcover", "Grassland", "Wetland",
-          "Human Footprint", "Off"),
+          "Forest", "Grassland", "Wetland", "Rivers",
+          "Human Footprint", "Climate Extremes", 
+          "Off"          
+          ),
         options = layersControlOptions(collapsed = FALSE)) %>%
       htmlwidgets::onRender("
       function(el, x) {
@@ -116,7 +122,7 @@ function(input, output, session) {
       leafletProxy("RI_MAP") %>%
         removeControl("ri-legend") %>%
         addLegend(pal=base_group_cache[[input$RI_MAP_tile]][4][[1]], 
-                  values=values(raster(RI_READY[[base_group_cache[[input$RI_MAP_tile]][2][[1]]]])), 
+                  values=values(raster(base_group_cache[[input$RI_MAP_tile]][2][[1]])), 
                   position="bottomleft", 
                   opacity=1,
                   title="values", 
@@ -131,7 +137,7 @@ function(input, output, session) {
       ## update map
       leafletProxy("RI_MAP") %>%
       addRasterImage(
-           raster(RI_READY[[base_group_cache[[input$RI_MAP_tile]][2][[1]]]]),
+           raster(base_group_cache[[input$RI_MAP_tile]][2][[1]]),
            colors = base_group_cache[[input$RI_MAP_tile]][3][[1]],
            group = input$RI_MAP_tile) %>%
          showGroup(input$RI_MAP_tile)
@@ -145,24 +151,27 @@ function(input, output, session) {
   
   # Reset RI to CP&P recommendation 
   observeEvent(input$ri_reset, {
-    updateNumericInput(session, "kba", value = 15)
-    updateNumericInput(session, "ch", value = 9)
-    updateNumericInput(session, "range_end", value = 8)
-    updateNumericInput(session, "range_spc", value = 6)
-    updateNumericInput(session, "range_thr", value = 7)
-    updateNumericInput(session, "carbon_p", value = 5)
-    updateNumericInput(session, "carbon_s", value = 5)
-    updateNumericInput(session, "climate_e", value = 12)
-    updateNumericInput(session, "climate_r", value = 6)
-    updateNumericInput(session, "climate_v", value = 6)
-    updateNumericInput(session, "connect", value = 13)
-    updateNumericInput(session, "freshwater", value = 1)
-    updateNumericInput(session, "rec", value = 1)
-    updateNumericInput(session, "forest", value = 2)
-    updateNumericInput(session, "grass", value = 2)
-    updateNumericInput(session, "wet", value = 2)
-    updateNumericInput(session, "pa", value = 12)
-    updateNumericInput(session, "hfi", value = 38)
+    updateNumericInput(session, "kba", value = 1)
+    updateNumericInput(session, "ch", value = 1)
+    updateNumericInput(session, "sar_rich", value = 1)
+    updateNumericInput(session, "end_rich", value = 1)
+    updateNumericInput(session, "biod_rich", value = 1)
+    updateNumericInput(session, "sar_goal", value = 1)
+    updateNumericInput(session, "end_goal", value = 1)
+    updateNumericInput(session, "biod_goal", value = 1)
+    updateNumericInput(session, "carbon_p", value = 1)
+    updateNumericInput(session, "carbon_s", value = 1)
+    updateNumericInput(session, "climate_e", value = 1)
+    updateNumericInput(session, "climate_r", value = 1)
+    updateNumericInput(session, "climate_c", value = 1)
+    updateNumericInput(session, "connect", value = 1)
+    updateNumericInput(session, "forest", value = 1)
+    updateNumericInput(session, "grass", value = 1)
+    updateNumericInput(session, "wet", value = 1)
+    updateNumericInput(session, "river", value = 1)
+    updateNumericInput(session, "shore", value = 1)
+    updateNumericInput(session, "pa", value = 1)
+    updateNumericInput(session, "hfi", value = 1)
   })
   
   # Update RI: RI equation
@@ -174,35 +183,39 @@ function(input, output, session) {
      spinner.style.display = 'block'")
     
   ## update weights table
-  weight_values <- c(input$kba, input$ch, 
-               input$range_end, input$range_spc, input$range_thr,
-               input$carbon_p, input$carbon_s, 
-               input$climate_e, input$climate_r, input$climate_v,
-               input$connect, input$freshwater, input$rec,
-               input$forest, input$grass, input$wet,
-               input$pa, input$hfi)
+  weight_values <- c(
+    input$kba, input$ch, 
+    input$sar_rich, input$end_rich, input$biod_rich,
+    input$sar_goal, input$end_goal, input$biod_goal,
+    input$carbon_p, input$carbon_s, 
+    input$climate_e, input$climate_r, input$climate_c,
+    input$connect, 
+    input$forest, input$grass, input$wet, input$river, input$shore,
+    input$pa, input$hfi)
    weights_tbl(weights_tbl() %>% mutate(WEIGHTS = weight_values))
   
   ## build RI  
   RI <<- (
-     (RI_READY$W_Carbon_potential  * input$carbon_p) # carbon potential
-    + (RI_READY$W_Carbon_storage * input$carbon_s)  # + carbon storage
-    + (RI_READY$ECCC_CH_ALL_HA_SUM0 * input$ch)  # + critical habitat
-    - (RI_READY$W_Climate_extremes * input$climate_e)  # - climate extremes
-    + (RI_READY$W_Climate_refugia * input$climate_r)  # + climate refugia
-    + (RI_READY$W_Climate_shortest_path * input$climate_v)  # + climate velocity (centrality)
-    + (RI_READY$W_Connectivity * input$connect)  # + connectivity
-    + (RI_READY$ECCC_SAR_END_N * input$range_end) # + range map END
-    + (RI_READY$`T_LC_Forest-lc` * input$forest) # + forest land cover
-    + (RI_READY$W_Freshwater * input$freshwater)  # + freshwater provision
-    + (RI_READY$W_Recreation * input$rec)  # + recreation
-    + (RI_READY$T_LC_Grassland * input$grass) # + grassland
-    - (RI_READY$W_Human_footprint * input$hfi)  # - human footprint index
-    + (RI_READY$W_Key_biodiversity_areas * input$kba)            # + key biodiversity areas
-    + (RI_READY$Existing_Conservation_ha * input$pa)             # + protected areas
-    + (RI_READY$ECCC_SAR_SPC_N * input$range_spc) # + range map SPC
-    + (RI_READY$ECCC_SAR_THR_N * input$range_thr) # + range map THR
-    + (RI_READY$T_LC_Wetlands * input$wet) # + wetland
+     (kba * input$kba) # + key biodiversity
+    + (ch * input$ch)  # + critical habitat
+    + (sar_rich * input$sar_rich)  # + SAR species richness 
+    + (end_rich * input$end_rich)  # + END species richness 
+    + (biod_rich * input$biod_rich)  # + Common species richness 
+    + (sar_goal * input$sar_goal)  # + SAR species goal 
+    + (end_goal * input$end_goal)  # + END species goal 
+    + (biod_goal * input$biod_goal)  # + common species goal 
+    + (carbon_p * input$carbon_p)  # + carbon potential
+    + (carbon_s * input$carbon_s)  # + carbon storage
+    + (climate_r * input$climate_r)  # + climate refugia
+    + (climate_c * input$climate_c)  # + climate centrality
+    + (connect * input$connect)  # + connectivity
+    + (forest * input$forest) # + forest land cover
+    + (grass * input$grass) # + grassland
+    + (wet * input$wet) # + wetland
+    + (river * input$river) # + grassland
+    + (pa * input$pa) # + protected areas
+    - (hfi * input$hfi)  # - human footprint index
+    - (climate_e * input$climate_e)  # - climate extremes
   )
   ## scale RI
   RI <<- normalize_between_0_and_1(RI)
@@ -249,32 +262,41 @@ function(input, output, session) {
     paste0(
       "(key biodiversity areas * ", input$kba, ")",
       " + (critical habitat * ",  input$ch, ")",
-      " + (endangered specices * ", input$range_end, ")",
-      " + (special concern species * ", input$range_spc, ")",
-      " + (threatened species * ", input$range_thr, ")",
+      " + (SAR richness * ", input$sar_rich, ")",
+      " + (END richness * ", input$end_rich, ")",
+      " + (Common richness * ", input$biod_rich, ")",
+      " + (SAR goal * ", input$sar_goal, ")",
+      " + (END goal * ", input$end_goal, ")",
+      " + (common goal * ", input$biod_goal, ")",
       " + (carbon potential * ", input$carbon_p, ")",
       " + (carbon storage * ", input$carbon_s, ")",
-      " - (climate extremes * ", input$climate_e, ")",
       " + (climate refugia * ", input$climate_r, ")",
-      " + (climate centrality * ", input$climate_v, ")",
+      " + (climate centrality * ", input$climate_c, ")",
       " + (connectivity * ", input$connect, ")",
-      " + (freshwater provision * ", input$freshwater, ")",
-      " + (recreation * ", input$rec, ")",
-      " + (forest landcover * ", input$forest, ")",
+      " + (forest * ", input$forest, ")",
       " + (grassland * ", input$grass, ")",
       " + (wetland * ", input$wet, ")",
+      " + (rivers * ", input$river, ")",
+      " + (shoreline * ", input$shore, ")",
       " + (existing conservation * ", input$pa, ")",
-      " - (human footprint index * ", input$hfi, ")"
+      " - (human footprint index * ", input$hfi, ")",
+      " - (climate extremes * ", input$climate_e, ")"
     )) 
   })
 
   # RI positive weight tally
   output$pos_weights <-  renderText({
     ## list of positive weights
-    positive_weight_tally <- (input$kba + input$ch + input$range_end + input$range_spc +
-      input$range_thr + input$carbon_p + input$carbon_s +
-      input$climate_r + input$climate_v + input$connect + input$freshwater +
-      input$rec + input$forest + input$grass + input$wet + input$pa) 
+    positive_weight_tally <- (
+      input$kba + input$ch +
+      input$sar_rich + input$end_rich + input$biod_rich +
+      input$sar_goal + input$end_goal + input$biod_goal +
+      input$carbon_p + input$carbon_s +
+      input$climate_r + input$climate_c + 
+      input$connect + 
+      input$forest + input$grass + input$wet + input$river + input$shore +
+      input$pa
+    ) 
     ## translate to HTML
     HTML(paste0("<b> Positive Weight tally:</b> ", positive_weight_tally))
   })
@@ -282,7 +304,7 @@ function(input, output, session) {
   # RI negative weight tally
   output$neg_weights <-  renderText({ 
     ## list of negative weights
-    negative_weight_tally <- -input$hfi + -input$climate_e
+    negative_weight_tally <- input$hfi + input$climate_e
     ## translate to HTML
     HTML(paste0("<b>Negative Weight tally:</b> ", negative_weight_tally))
   })    
@@ -291,28 +313,31 @@ function(input, output, session) {
   output$equation <-  renderText({
     ## positive weights
     positive_ri_inputs <- list(
-      list("feature" = "key biodiversity areas", "weight" = input$kba, "class" = "var-bio"),
+      list("feature" = "KBA", "weight" = input$kba, "class" = "var-bio"),
       list("feature" = "critical habitat", "weight" = input$ch, "class" = "var-bio"),
-      list("feature" = "endangered specices", "weight" = input$range_end, "class" = "var-bio"),
-      list("feature" = "special concern species", "weight" = input$range_spc, "class" = "var-bio"),
-      list("feature" = "threatened species", "weight" = input$range_thr, "class" = "var-bio"),
+      list("feature" = "SAR richness", "weight" = input$sar_rich, "class" = "var-bio"),
+      list("feature" = "END richness", "weight" = input$end_rich, "class" = "var-bio"),
+      list("feature" = "common richness", "weight" = input$biod_rich, "class" = "var-bio"),
+      list("feature" = "SAR goal", "weight" = input$sar_goal, "class" = "var-bio"),
+      list("feature" = "END goal", "weight" = input$end_goal, "class" = "var-bio"),
+      list("feature" = "common goal", "weight" = input$biod_goal, "class" = "var-bio"),
       list("feature" = "carbon potential", "weight" = input$carbon_p, "class" = "var-carbon"),
       list("feature" = "carbon storage", "weight" = input$carbon_s, "class" = "var-carbon"),
       list("feature" = "climate refugia", "weight" = input$climate_r, "class" = "var-climate"),
-      list("feature" = "climate centrality", "weight" = input$climate_v, "class" = "var-climate"),
+      list("feature" = "climate centrality", "weight" = input$climate_c, "class" = "var-climate"),
       list("feature" = "connectivity", "weight" = input$connect, "class" = "var-connect"),
-      list("feature" = "freshwater provision", "weight" = input$freshwater, "class" = "var-eservice"),
-      list("feature" = "recreation", "weight" = input$rec, "class" = "var-eservice"),
-      list("feature" = "forest landcover", "weight" = input$forest, "class" = "var-habitat"),
+      list("feature" = "forest", "weight" = input$forest, "class" = "var-habitat"),
       list("feature" = "grassland", "weight" = input$grass, "class" = "var-habitat"),
       list("feature" = "wetland", "weight" = input$wet, "class" = "var-habitat"),
+      list("feature" = "rivers", "weight" = input$river, "class" = "var-habitat"),
+      list("feature" = "shoreline", "weight" = input$shore, "class" = "var-habitat"),
       list("feature" = "existing conservation", "weight" = input$pa, "class" = "var-protection")
       )
     
     ## negative weights
     negative_ri_inputs <- list(
-      list("feature" = "climate extremes", "weight" = input$climate_e, "class" = "var-climate"),
-      list("feature" = "human footprint", "weight" = input$hfi, "class" = "var-threat")
+      list("feature" = "human footprint", "weight" = input$hfi, "class" = "var-threat"),
+      list("feature" = "climate extremes", "weight" = input$climate_e, "class" = "var-threat")
     )  
     
     ## sort by weight
@@ -337,6 +362,8 @@ function(input, output, session) {
       " + (<p class=", sorted_p[[14]]$class, ">", sorted_p[[14]]$feature, "</p> * <span>", sorted_p[[14]]$weight, "</span>)",
       " + (<p class=", sorted_p[[15]]$class, ">", sorted_p[[15]]$feature, "</p> * <span>", sorted_p[[15]]$weight, "</span>)",
       " + (<p class=", sorted_p[[16]]$class, ">", sorted_p[[16]]$feature, "</p> * <span>", sorted_p[[16]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[17]]$class, ">", sorted_p[[17]]$feature, "</p> * <span>", sorted_p[[17]]$weight, "</span>)",
+      " + (<p class=", sorted_p[[18]]$class, ">", sorted_p[[18]]$feature, "</p> * <span>", sorted_p[[18]]$weight, "</span>)",
       " - (<p class=", sorted_n[[1]]$class, ">", sorted_n[[1]]$feature, "</p> * <span>", sorted_n[[1]]$weight, "</span>)",
       " - (<p class=", sorted_n[[2]]$class, ">", sorted_n[[2]]$feature, "</p> * <span>", sorted_n[[2]]$weight, "</span>)"
     ))
