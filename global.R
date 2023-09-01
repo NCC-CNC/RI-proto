@@ -34,7 +34,13 @@ wet <- rast("data/_RIREADY/wet.tif")              # wetland
 river <- rast("data/_RIREADY/river.tif")          # rivers
 pa <- rast("data/_RIREADY/pa.tif")                # existing conservation
 hfi <- rast("data/_RIREADY/hfi.tif")               # hfi
-  
+
+# Rasters for Map
+## RI
+RI <<- rast("data/_RI/RI.tif")
+## protection
+pa_to_map <- pa
+pa_to_map[pa_to_map== 0] <- NA 
 
 # Weights excel
 weights_tbl <- read_xlsx("data/WEIGHTS.xlsx")
@@ -53,13 +59,6 @@ pts_wgs <- st_transform(pts, crs = 4326) %>%
     lat = sf::st_coordinates(.)[,2]
   ) 
 
-# Rasters for Map
-## RI
-RI <<- rast("data/_RI/RI.tif")
-## protection
-pa_to_map <- pa
-pa_to_map[pa_to_map== 0] <- NA 
-
 # Palettes for map
 RI_pal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent")
 RI_lpal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
@@ -77,6 +76,8 @@ ch_pal <- colorNumeric(palette = "YlOrRd", domain = c(0, 1), na.color = "transpa
 ch_lpal <- colorNumeric(palette = "YlOrRd", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 sar_pal <- colorNumeric(palette = "Reds", domain = c(0, 1), na.color = "transparent")
 sar_lpal <- colorNumeric(palette = "Reds", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
+goal_pal <- colorNumeric(palette = "RdPu", domain = c(0, 1), na.color = "transparent")
+goal_lpal <- colorNumeric(palette = "RdPu", domain = c(0,1), na.color = "transparent", reverse = TRUE)
 forest_pal <- colorNumeric(palette = "YlGn", domain = c(0, 1), na.color = "transparent")
 forest_lpal <- colorNumeric(palette = "YlGn", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
 grass_pal <- colorNumeric(palette = "Oranges", domain = c(0, 1), na.color = "transparent")
