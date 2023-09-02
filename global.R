@@ -36,11 +36,30 @@ pa <- rast("data/_RIREADY/pa.tif")                # existing conservation
 hfi <- rast("data/_RIREADY/hfi.tif")               # hfi
 
 # Rasters for Map
-## RI
 RI <<- rast("data/_RI/RI.tif")
+kba_map <- rast("data/National/Biodiversity/W_Key_biodiversity_areas.tif") * 100  # key biodiversity areas
+ch_map <- rast("data/National/Biodiversity/ECCC_CH_ALL_HA_SUM0.tif")        # critical habitat
+sar_rich_map <- rast("data/National/Biodiversity/ECCC_SAR_SUM_N.tif")       # SAR richness
+end_rich_map <- rast("data/National/Biodiversity/NSC_END_SUM_N.tif")        # END richness
+biod_rich_map <- rast("data/National/Biodiversity/BIOD_N.tif")          # BIOD richness
+sar_goal_map <- rast("data/National/Biodiversity/ECCC_SAR_MEAN.tif")               # SAR goal
+end_goal_map <- rast("data/National/Biodiversity/NSC_END_MEAN.tif")         # END goal
+biod_goal_map <- rast("data/National/Biodiversity/BIOD_MEAN.tif")           # BIOD goal
+carbon_p_map <-  rast("data/National/Carbon/W_Carbon_potential.tif")        # carbon potential
+carbon_s_map <-  rast("data/National/Carbon/W_Carbon_storage.tif")          # carbon storage
+climate_c_map <-  rast("data/National/Climate/W_Climate_shortest_path.tif") # climate centrality
+climate_e_map <-  rast("data/National/Climate/W_Climate_extremes.tif")      # climate extremes
+climate_r_map <-  rast("data/National/Climate/W_Climate_refugia.tif")       # climate refugia
+connect_map <- rast("data/National/Connectivity/W_Connectivity.tif")        # connectivity
+forest_map <- rast("data/National/Habitat/T_LC_Forest-lc.tif")              # forest
+grass_map <- rast("data/National/Habitat/T_LC_Grassland.tif")               # grassland
+wet_map <- rast("data/National/Habitat/T_LC_Wetlands.tif")                  # wetland
+river_map <- rast("data/National/Habitat/T_KM_River_length.tif")            # rivers
+river_map[river_map > 10] <- 10
+hfi_map <- rast("data/National/Threats/W_Human_footprint.tif")               # hfi
 ## protection
-pa_to_map <- pa
-pa_to_map[pa_to_map== 0] <- NA 
+pa_map <- pa
+pa_map[pa_map== 0] <- NA 
 
 # Weights excel
 weights_tbl <- read_xlsx("data/WEIGHTS.xlsx")
@@ -60,34 +79,248 @@ pts_wgs <- st_transform(pts, crs = 4326) %>%
   ) 
 
 # Palettes for map
+## function for reversing palette
+lpal <- function(...) {
+  colorNumeric(..., reverse = TRUE)
+}
+
+## RI
 RI_pal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent")
 RI_lpal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-carbon_pal <- colorNumeric(palette = "YlOrBr", domain = c(0, 1), na.color = "transparent")
-carbon_lpal <- colorNumeric(palette = "YlOrBr", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-climate_pal <- colorNumeric(palette = "magma", domain = c(0, 1), na.color = "transparent")
-climate_lpal <- colorNumeric(palette = "magma", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-connectivity_lpal <- colorNumeric(palette = "PRGn", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-connectivity_pal <- colorNumeric(palette = "PRGn", domain = c(0, 1), na.color = "transparent")
-eservice_pal <- colorNumeric(palette = "BrBG", domain = c(0, 1), na.color = "transparent")
-eservice_lpal <- colorNumeric(palette = "BrBG", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-hfi_pal <- colorNumeric(palette = "RdYlBu", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-hfi_lpal <- colorNumeric(palette = "RdYlBu", domain = c(0, 1), na.color = "transparent")
-ch_pal <- colorNumeric(palette = "YlOrRd", domain = c(0, 1), na.color = "transparent")
-ch_lpal <- colorNumeric(palette = "YlOrRd", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-sar_pal <- colorNumeric(palette = "Reds", domain = c(0, 1), na.color = "transparent")
-sar_lpal <- colorNumeric(palette = "Reds", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-goal_pal <- colorNumeric(palette = "RdPu", domain = c(0, 1), na.color = "transparent")
-goal_lpal <- colorNumeric(palette = "RdPu", domain = c(0,1), na.color = "transparent", reverse = TRUE)
-forest_pal <- colorNumeric(palette = "YlGn", domain = c(0, 1), na.color = "transparent")
-forest_lpal <- colorNumeric(palette = "YlGn", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-grass_pal <- colorNumeric(palette = "Oranges", domain = c(0, 1), na.color = "transparent")
-grass_lpal <- colorNumeric(palette = "Oranges", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-wet_pal <- colorNumeric(palette = "BuPu", domain = c(0, 1), na.color = "transparent")
-wet_lpal <- colorNumeric(palette = "BuPu", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-riv_pal <- colorNumeric(palette = "Blues", domain = c(0, 1), na.color = "transparent")
-riv_lpal <- colorNumeric(palette = "Blues", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
-pa_pal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent")
-pa_lpal <- colorNumeric(palette = "BuGn", domain = c(0.0001, 1), na.color = "transparent", reverse = TRUE)
+## ch
+ch_pal <- colorNumeric(
+  palette = "YlOrRd", 
+  domain = c(min(ch_map[], na.rm = TRUE), max(ch_map[], na.rm = TRUE)), 
+  na.color = "transparent"
+)
+ch_lpal <- colorNumeric(
+  palette = "YlOrRd", 
+  domain = c(min(ch_map[], na.rm = TRUE), max(ch_map[], na.rm = TRUE)), 
+  na.color = "transparent",
+  reverse = TRUE
+)
+## SAR richness
+sar_rich_pal <- colorNumeric(
+  palette = "Reds", 
+  domain = c(min(sar_rich_map[], na.rm = TRUE), max(sar_rich_map[], na.rm = TRUE)),  
+  na.color = "transparent"
+)
+sar_rich_lpal <- colorNumeric(
+  palette = "Reds", 
+  domain = c(min(sar_rich_map[], na.rm = TRUE), max(sar_rich_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## END richness
+end_rich_pal <- colorNumeric(
+  palette = "Reds", 
+  domain = c(min(end_rich_map[], na.rm = TRUE), max(end_rich_map[], na.rm = TRUE)),  
+  na.color = "transparent"
+)
+end_rich_lpal <- colorNumeric(
+  palette = "Reds", 
+  domain = c(min(end_rich_map[], na.rm = TRUE), max(end_rich_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## Common richness
+biod_rich_pal <- colorNumeric(
+  palette = "Reds", 
+  domain = c(min(biod_rich_map[], na.rm = TRUE), max(biod_rich_map[], na.rm = TRUE)),  
+  na.color = "transparent"
+)
+biod_rich_lpal <- colorNumeric(
+  palette = "Reds", 
+  domain = c(min(biod_rich_map[], na.rm = TRUE), max(biod_rich_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## SAR goal
+mean_val <- terra::global(sar_goal_map, na.rm = TRUE, fun = "mean")[[1]]
+std_val <- terra::global(sar_goal_map, na.rm = TRUE, fun = "sd")[[1]]
+lower_bound <- mean_val - 2 * std_val
+upper_bound <- mean_val + 1 * std_val
+sar_goal_map[sar_goal_map>upper_bound] <- upper_bound
+sar_goal_map[sar_goal_map<lower_bound] <- lower_bound
+sar_goal_pal <- colorNumeric(
+  palette = "RdPu", 
+  domain = c(0, upper_bound),
+  na.color = "transparent"
+)
+sar_goal_lpal <- colorNumeric(
+  palette = "RdPu", 
+  domain = c(min(sar_goal_map[], na.rm = TRUE), 0.017792),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## END goal
+end_goal_pal <- colorNumeric(
+  palette = "RdPu", 
+  domain = c(min(end_goal_map[], na.rm = TRUE), max(end_goal_map[], na.rm = TRUE)),
+  na.color = "transparent"
+)
+end_goal_lpal <- colorNumeric(
+  palette = "RdPu", 
+  domain = c(min(end_goal_map[], na.rm = TRUE), max(end_goal_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## Common goal
+biod_goal_pal <- colorNumeric(
+  palette = "RdPu", 
+  domain = c(min(biod_goal_map[], na.rm = TRUE), max(biod_goal_map[], na.rm = TRUE)),
+  na.color = "transparent"
+)
+biod_goal_lpal <- colorNumeric(
+  palette = "RdPu", 
+  domain = c(min(biod_goal_map[], na.rm = TRUE), max(biod_goal_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## carbon potential
+carbon_p_pal <- colorNumeric(
+  palette = "YlOrBr", 
+  domain = c(min(carbon_p_map[], na.rm = TRUE), max(carbon_p_map[], na.rm = TRUE)), 
+  na.color = "transparent"
+)
+carbon_p_lpal <- colorNumeric(
+  palette = "YlOrBr", 
+  domain = c(min(carbon_p_map[], na.rm = TRUE), max(carbon_p_map[], na.rm = TRUE)), 
+  na.color = "transparent",
+  reverse = TRUE
+)
+## carbon storage
+carbon_s_pal <- colorNumeric(
+  palette = "YlOrBr", 
+  domain = c(min(carbon_s_map[], na.rm = TRUE), max(carbon_s_map[], na.rm = TRUE)), 
+  na.color = "transparent"
+)
+carbon_s_lpal <- colorNumeric(
+  palette = "YlOrBr", 
+  domain = c(min(carbon_s_map[], na.rm = TRUE), max(carbon_s_map[], na.rm = TRUE)), 
+  na.color = "transparent",
+  reverse = TRUE
+)
+## climate refugia
+climate_r_pal <- colorNumeric(
+  palette = "magma", 
+  domain = c(min(climate_r_map[], na.rm = TRUE), max(climate_r_map[], na.rm = TRUE)),  
+  na.color = "transparent"
+)
+climate_r_lpal <- colorNumeric(
+  palette = "magma", 
+  domain = c(min(climate_r_map[], na.rm = TRUE), max(climate_r_map[], na.rm = TRUE)),  
+  na.color = "transparent",
+  reverse = TRUE
+)
+## climate centrality
+climate_c_pal <- colorNumeric(
+  palette = "magma", 
+  domain = c(min(climate_c_map[], na.rm = TRUE), max(climate_c_map[], na.rm = TRUE)),  
+  na.color = "transparent"
+)
+climate_c_lpal <- colorNumeric(
+  palette = "magma", 
+  domain = c(min(climate_c_map[], na.rm = TRUE), max(climate_c_map[], na.rm = TRUE)),  
+  na.color = "transparent",
+  reverse = TRUE
+)
+## climate extremes
+climate_e_pal <- colorNumeric(
+  palette = "magma", 
+  domain = c(min(climate_e_map[], na.rm = TRUE), max(climate_e_map[], na.rm = TRUE)),  
+  na.color = "transparent"
+)
+climate_e_lpal <- colorNumeric(
+  palette = "magma", 
+  domain = c(min(climate_e_map[], na.rm = TRUE), max(climate_e_map[], na.rm = TRUE)),  
+  na.color = "transparent",
+  reverse = TRUE
+)
+## connectivity
+connect_pal <- colorNumeric(
+  palette = "PRGn", 
+  domain = c(min(connect_map[], na.rm = TRUE), max(connect_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+)
+connect_lpal <- colorNumeric(
+  palette = "PRGn", 
+  domain = c(min(connect_map[], na.rm = TRUE), max(connect_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## Forest
+forest_pal <- colorNumeric(
+  palette = "YlGn", 
+  domain = c(min(forest_map[], na.rm = TRUE), max(forest_map[], na.rm = TRUE)),
+  na.color = "transparent"
+)
+forest_lpal <- colorNumeric(
+  palette = "YlGn", 
+  domain = c(min(forest_map[], na.rm = TRUE), max(forest_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## Grassland
+grass_pal <- colorNumeric(
+  palette = "Oranges", 
+  domain = c(min(grass_map[], na.rm = TRUE), max(grass_map[], na.rm = TRUE)),
+  na.color = "transparent"
+)
+grass_lpal <- colorNumeric(
+  palette = "Oranges", 
+  domain = c(min(grass_map[], na.rm = TRUE), max(grass_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## wetland
+wet_pal <- colorNumeric(
+  palette = "BuPu", 
+  domain = c(min(wet_map[], na.rm = TRUE), max(wet_map[], na.rm = TRUE)), 
+  na.color = "transparent"
+)
+wet_lpal <- colorNumeric(
+  palette = "BuPu", 
+  domain = c(min(wet_map[], na.rm = TRUE), max(wet_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## rivers
+river_pal <- colorNumeric(
+  palette = "Blues", 
+  domain = c(0, 10),
+  na.color = "transparent"
+)
+river_lpal <- colorNumeric(
+  palette = "Blues", 
+  domain = range(0, 10),
+  na.color = "transparent", 
+  reverse = TRUE
+)
+## HFI
+hfi_pal <- colorNumeric(
+  palette = "RdYlBu", 
+  domain = c(min(hfi_map[], na.rm = TRUE), max(hfi_map[], na.rm = TRUE)), 
+  na.color = "transparent", 
+  reverse = TRUE
+)
+hfi_lpal <- colorNumeric(
+  palette = "RdYlBu", 
+  domain = c(min(hfi_map[], na.rm = TRUE), max(hfi_map[], na.rm = TRUE)), 
+  na.color = "transparent"
+)
+## protected
+pa_pal <- colorNumeric(
+  palette = "BuGn", 
+  domain = c(min(pa_map[], na.rm = TRUE), max(pa_map[], na.rm = TRUE)), 
+  na.color = "transparent"
+)
+pa_lpal <- colorNumeric(
+  palette = "BuGn", 
+  domain = c(min(pa_map[], na.rm = TRUE), max(pa_map[], na.rm = TRUE)),
+  na.color = "transparent", 
+  reverse = TRUE
+)
 
 # Normalize layers between 0-1 function
 normalize_between_0_and_1 <- function(rast) {

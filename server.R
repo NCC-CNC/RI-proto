@@ -3,25 +3,25 @@ function(input, output, session) {
   
   # Layer cache (for lazy loading)
   base_group_cache <- list(
-    (`Resilience Index` = c(TRUE, RI, RI_pal, RI_lpal)),
-    (`Critical Habitat` = c(FALSE, ch, ch_pal, ch_lpal)), 
-    (`SAR Richness` = c(FALSE, sar_rich, sar_pal, sar_lpal)),
-    (`END Richness` = c(FALSE, end_rich, sar_pal, sar_lpal)), 
-    (`Common Richness` = c(FALSE, biod_rich, sar_pal, sar_lpal)),
-    (`SAR Goal` = c(FALSE, sar_goal, goal_pal, goal_lpal)), 
-    (`END Goal` = c(FALSE, end_goal, goal_pal, goal_pal)),
-    (`Common Goal` = c(FALSE, biod_goal, goal_pal, goal_lpal)),
-    (`Carbon Potential` = c(FALSE, carbon_p, carbon_pal, carbon_lpal)),
-    (`Carbon Storage` = c(FALSE, carbon_s, carbon_pal, carbon_lpal)),
-    (`Climate Refugia` = c(FALSE, climate_r, climate_pal, climate_lpal)),
-    (`Climate Centrality` = c(FALSE, climate_c, climate_pal, climate_lpal)),
-    (`Connectivity` = c(FALSE, connect, connectivity_pal, connectivity_lpal)),
-    (`Forest` = c(FALSE, forest, forest_pal, forest_lpal)),
-    (`Grassland` = c(FALSE, grass, grass_pal, grass_lpal)),
-    (`Wetland` = c(FALSE, wet, wet_pal, wet_lpal)),
-    (`Rivers` = c(FALSE, river, riv_pal, riv_lpal)),
-    (`Human Footprint Index` = c(FALSE, hfi, hfi_pal, hfi_lpal)),
-    (`Climate Extremes` = c(FALSE, climate_e, climate_pal, climate_lpal)),
+    (`Resilience Index` = c(TRUE, RI, RI_pal, RI_lpal, "Index")),
+    (`Critical Habitat` = c(FALSE, ch_map, ch_pal, ch_lpal, "Total Ha")), 
+    (`SAR Richness` = c(FALSE, sar_rich_map, sar_rich_pal, sar_rich_lpal, "Count")),
+    (`END Richness` = c(FALSE, end_rich_map, end_rich_pal, end_rich_lpal, "Count")), 
+    (`Common Richness` = c(FALSE, biod_rich_map, biod_rich_pal, biod_rich_lpal, "Count")),
+    (`SAR Goal` = c(FALSE, sar_goal_map, sar_goal_pal, sar_goal_lpal, "% Goal </br> Legend is wrong! </br> values range between: </br> 0 [white] to 0.017 [purple]")), 
+    (`END Goal` = c(FALSE, end_goal_map, end_goal_pal, end_goal_lpal, "% Goal")),
+    (`Common Goal` = c(FALSE, biod_goal_map, biod_goal_pal, biod_goal_lpal, "% Goal")),
+    (`Carbon Potential` = c(FALSE, carbon_p_map, carbon_p_pal, carbon_p_lpal, "Tonnes")),
+    (`Carbon Storage` = c(FALSE, carbon_s_map, carbon_s_pal, carbon_s_lpal, "Toness per year")),
+    (`Climate Refugia` = c(FALSE, climate_r_map, climate_r_pal, climate_r_lpal, "Index")),
+    (`Climate Centrality` = c(FALSE, climate_c_map, climate_c_pal, climate_c_lpal, "KM per year")),
+    (`Connectivity` = c(FALSE, connect_map, connect_pal, connect_lpal, "Current Density")),
+    (`Forest` = c(FALSE, forest_map, forest_pal, forest_lpal, "Ha")),
+    (`Grassland` = c(FALSE, grass_map, grass_pal, grass_lpal, "Ha")),
+    (`Wetland` = c(FALSE, wet_map, wet_pal, wet_lpal, "Ha")),
+    (`Rivers` = c(FALSE, river_map, river_pal, river_lpal, "Km")),
+    (`Human Footprint Index` = c(FALSE, hfi_map, hfi_pal, hfi_lpal, 'Index')),
+    (`Climate Extremes` = c(FALSE, climate_e_map, climate_e_pal, climate_e_lpal, "Index")),
     (`Off` = TRUE)
   )
   
@@ -63,7 +63,7 @@ function(input, output, session) {
                 values=values(raster(RI)), 
                 position="bottomleft", 
                 opacity=1,
-                title="values",
+                title="Index",
                 layerId="ri-legend",
                 labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE))) %>%
       ## kba
@@ -74,7 +74,7 @@ function(input, output, session) {
       hideGroup("KBA") %>%
       ## protected
       addRasterImage(
-        raster(pa_to_map),
+        raster(pa_map),
         colors = pa_pal,
         method = "ngb",
         group = "Protected") %>%
@@ -123,11 +123,12 @@ function(input, output, session) {
         removeControl("ri-legend") %>%
         addLegend(pal=base_group_cache[[input$RI_MAP_tile]][4][[1]], 
                   values=values(raster(base_group_cache[[input$RI_MAP_tile]][2][[1]])), 
-                  position="bottomleft", 
+                  position="bottomleft",
                   opacity=1,
-                  title="values", 
+                  title=base_group_cache[[input$RI_MAP_tile]][5][[1]], 
                   layerId="ri-legend",
-                  labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
+                  labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE),
+                                        digits = 7, big.mark = ','))
     }
     
     ## lazy load
