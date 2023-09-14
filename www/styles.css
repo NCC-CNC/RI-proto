@@ -2,15 +2,6 @@ a {
   color: #333;
 }
 
-.weight-builder {
-  height: calc(100vh - 200px);
-  overflow-y: auto;
-  overflow-x: hidden !important;
-  padding-right: 15px;
-  margin-right: -15px;
-  scrollbar-color: #2D602E  #33862B;
-}
-
 .ri-header {
   display: flex;
   align-items: baseline;

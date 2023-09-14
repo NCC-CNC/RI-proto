@@ -3,19 +3,17 @@ function(input, output, session) {
   
   # Layer cache (for lazy loading)
   base_group_cache <- list(
-    (`Resilience Index` = c(TRUE, RI, RI_pal, RI_lpal, "Index")),
+    (`Landscape Resilience` = c(TRUE, RI, RI_pal, RI_lpal, "Score")),
     (`Critical Habitat` = c(FALSE, ch_map, ch_pal, ch_lpal, "Total Ha")), 
     (`SAR Richness` = c(FALSE, sar_rich_map, sar_rich_pal, sar_rich_lpal, "Count")),
     (`END Richness` = c(FALSE, end_rich_map, end_rich_pal, end_rich_lpal, "Count")), 
     (`Common Richness` = c(FALSE, biod_rich_map, biod_rich_pal, biod_rich_lpal, "Count")),
-    (`SAR Goal` = c(FALSE, sar_goal_map, sar_goal_pal, sar_goal_lpal, "% Goal </br> Legend is wrong! </br> values range between: </br> 0 [white] to 0.017 [purple]")), 
-    (`END Goal` = c(FALSE, end_goal_map, end_goal_pal, end_goal_lpal, "% Goal")),
-    (`Common Goal` = c(FALSE, biod_goal_map, biod_goal_pal, biod_goal_lpal, "% Goal")),
-    (`Carbon Potential` = c(FALSE, carbon_p_map, carbon_p_pal, carbon_p_lpal, "Tonnes")),
-    (`Carbon Storage` = c(FALSE, carbon_s_map, carbon_s_pal, carbon_s_lpal, "Toness per year")),
+    (`SAR Goal` = c(FALSE, sar_goal_map, sar_goal_pal, sar_goal_lpal, "% Goal Scaled")), 
+    (`END Goal` = c(FALSE, end_goal_map, end_goal_pal, end_goal_lpal, "% Goal Scaled")),
+    (`Common Goal` = c(FALSE, biod_goal_map, biod_goal_pal, biod_goal_lpal, "% Goal Scaled")),
+    (`Connectivity` = c(FALSE, connect_map, connect_pal, connect_lpal, "Current Density")),    
     (`Climate Refugia` = c(FALSE, climate_r_map, climate_r_pal, climate_r_lpal, "Index")),
     (`Climate Centrality` = c(FALSE, climate_c_map, climate_c_pal, climate_c_lpal, "KM per year")),
-    (`Connectivity` = c(FALSE, connect_map, connect_pal, connect_lpal, "Current Density")),
     (`Forest` = c(FALSE, forest_map, forest_pal, forest_lpal, "Ha")),
     (`Grassland` = c(FALSE, grass_map, grass_pal, grass_lpal, "Ha")),
     (`Wetland` = c(FALSE, wet_map, wet_pal, wet_lpal, "Ha")),
@@ -27,13 +25,12 @@ function(input, output, session) {
   
   ## update names
   names(base_group_cache) <- c(
-    "Resilience Index", 
+    "Landscape Resilience", 
     "Critical Habitat", 
     "SAR Richness", "END Richness", "Common Richness",
     "SAR Goal", "END Goal", "Common Goal",
-    "Carbon Potential", "Carbon Storage",
-    "Climate Refugia", "Climate Centrality",
     "Connectivity", 
+    "Climate Refugia", "Climate Centrality",
     "Forest", "Grassland", "Wetland", "Rivers",
     "Human Footprint", "Climate Extremes", 
     "Off"
@@ -48,22 +45,22 @@ function(input, output, session) {
       addTiles() %>%
       addGlPoints(data = pts_wgs,
                   radius = 5,
-                  group = "Points",
+                  group = "LR Scores",
                   layerId = "RI_Points",
-                  popup = paste0("<b>RI: </b>", pts_wgs$RI),
+                  popup = paste0("<b>LR Score: </b>", pts_wgs$RI),
                   color = "#2b8cbe") %>%
-      hideGroup("Points") %>%
+      hideGroup("LR Scores") %>%
       ## ri
       addRasterImage(
         raster(RI), 
         colors = RI_pal,
         layerId = "RI",
-        group = "Resilience Index") %>%
+        group = "Landscape Resilience") %>%
       addLegend(pal=RI_lpal, 
                 values=values(raster(RI)), 
                 position="bottomleft", 
                 opacity=1,
-                title="Index",
+                title="Score",
                 layerId="ri-legend",
                 labFormat=labelFormat(transform = function(x) sort(x, decreasing = TRUE))) %>%
       ## kba
@@ -81,15 +78,14 @@ function(input, output, session) {
       hideGroup("Protected") %>%
       ## layer controls
       addLayersControl(
-        overlayGroups = c("Protected", "KBA", "Points"),
+        overlayGroups = c("Protected", "KBA", "LR Scores"),
         baseGroups = c(
-          "Resilience Index", 
+          "Landscape Resilience", 
           "Critical Habitat", 
           "SAR Richness", "END Richness", "Common Richness",
           "SAR Goal", "END Goal", "Common Goal",
-          "Carbon Potential", "Carbon Storage",
+          "Connectivity",
           "Climate Refugia", "Climate Centrality",
-          "Connectivity", 
           "Forest", "Grassland", "Wetland", "Rivers",
           "Human Footprint", "Climate Extremes", 
           "Off"          
@@ -160,8 +156,6 @@ function(input, output, session) {
     updateNumericInput(session, "sar_goal", value = 1)
     updateNumericInput(session, "end_goal", value = 1)
     updateNumericInput(session, "biod_goal", value = 1)
-    updateNumericInput(session, "carbon_p", value = 1)
-    updateNumericInput(session, "carbon_s", value = 1)
     updateNumericInput(session, "climate_e", value = 1)
     updateNumericInput(session, "climate_r", value = 1)
     updateNumericInput(session, "climate_c", value = 1)
@@ -188,12 +182,11 @@ function(input, output, session) {
     input$kba, input$ch, 
     input$sar_rich, input$end_rich, input$biod_rich,
     input$sar_goal, input$end_goal, input$biod_goal,
-    input$carbon_p, input$carbon_s, 
     input$climate_e, input$climate_r, input$climate_c,
     input$connect, 
     input$forest, input$grass, input$wet, input$river, input$shore,
     input$pa, input$hfi)
-   weights_tbl(weights_tbl() %>% mutate(WEIGHTS = weight_values))
+   weights_tbl(weights_tbl() %>% mutate(VALUES = weight_values))
   
   ## build RI  
   RI <<- (
@@ -205,15 +198,13 @@ function(input, output, session) {
     + (sar_goal * input$sar_goal)  # + SAR species goal 
     + (end_goal * input$end_goal)  # + END species goal 
     + (biod_goal * input$biod_goal)  # + common species goal 
-    + (carbon_p * input$carbon_p)  # + carbon potential
-    + (carbon_s * input$carbon_s)  # + carbon storage
     + (climate_r * input$climate_r)  # + climate refugia
     + (climate_c * input$climate_c)  # + climate centrality
     + (connect * input$connect)  # + connectivity
     + (forest * input$forest) # + forest land cover
     + (grass * input$grass) # + grassland
     + (wet * input$wet) # + wetland
-    + (river * input$river) # + grassland
+    + (river * input$river) # + river
     + (pa * input$pa) # + protected areas
     - (hfi * input$hfi)  # - human footprint index
     - (climate_e * input$climate_e)  # - climate extremes
@@ -227,7 +218,7 @@ function(input, output, session) {
     addRasterImage(
       raster(RI), 
       colors = RI_pal,
-      group = "Resilience Index")
+      group = "Landscape Resilience")
   
   ## extract points
   ri_df <- exactextractr::exact_extract(RI, pts_buf, "mean", force_df = TRUE) %>%
@@ -243,13 +234,13 @@ function(input, output, session) {
    clearGlLayers() %>%
     addGlPoints(data = pts_wgs,
                 radius = 5,
-                group = "Points",
+                group = "LR Scores",
                 layerId = "RI_Points",
-                popup = paste0("<b>RI: </b>", pts_wgs$RI),
+                popup = paste0("<b>LR Score: </b>", pts_wgs$RI),
                 color = "#2b8cbe") %>%
-    hideGroup("Points") %>% # <--- hack to remove points??
-    showGroup("Points") %>% # <--- hack to remove points??
-    hideGroup("Points") # <--- hack to remove points??
+    hideGroup("LR Scors") %>% # <--- hack to remove points??
+    showGroup("LR Scores") %>% # <--- hack to remove points??
+    hideGroup("LR Scores") # <--- hack to remove points??
    
   ## remove spinner
   shinyjs::runjs(
@@ -269,8 +260,6 @@ function(input, output, session) {
       " + (SAR goal * ", input$sar_goal, ")",
       " + (END goal * ", input$end_goal, ")",
       " + (common goal * ", input$biod_goal, ")",
-      " + (carbon potential * ", input$carbon_p, ")",
-      " + (carbon storage * ", input$carbon_s, ")",
       " + (climate refugia * ", input$climate_r, ")",
       " + (climate centrality * ", input$climate_c, ")",
       " + (connectivity * ", input$connect, ")",
@@ -292,7 +281,6 @@ function(input, output, session) {
       input$kba + input$ch +
       input$sar_rich + input$end_rich + input$biod_rich +
       input$sar_goal + input$end_goal + input$biod_goal +
-      input$carbon_p + input$carbon_s +
       input$climate_r + input$climate_c + 
       input$connect + 
       input$forest + input$grass + input$wet + input$river + input$shore +
@@ -322,8 +310,6 @@ function(input, output, session) {
       list("feature" = "SAR goal", "weight" = input$sar_goal, "class" = "var-bio"),
       list("feature" = "END goal", "weight" = input$end_goal, "class" = "var-bio"),
       list("feature" = "common goal", "weight" = input$biod_goal, "class" = "var-bio"),
-      list("feature" = "carbon potential", "weight" = input$carbon_p, "class" = "var-carbon"),
-      list("feature" = "carbon storage", "weight" = input$carbon_s, "class" = "var-carbon"),
       list("feature" = "climate refugia", "weight" = input$climate_r, "class" = "var-climate"),
       list("feature" = "climate centrality", "weight" = input$climate_c, "class" = "var-climate"),
       list("feature" = "connectivity", "weight" = input$connect, "class" = "var-connect"),
@@ -364,7 +350,6 @@ function(input, output, session) {
       " + (<p class=", sorted_p[[15]]$class, ">", sorted_p[[15]]$feature, "</p> * <span>", sorted_p[[15]]$weight, "</span>)",
       " + (<p class=", sorted_p[[16]]$class, ">", sorted_p[[16]]$feature, "</p> * <span>", sorted_p[[16]]$weight, "</span>)",
       " + (<p class=", sorted_p[[17]]$class, ">", sorted_p[[17]]$feature, "</p> * <span>", sorted_p[[17]]$weight, "</span>)",
-      " + (<p class=", sorted_p[[18]]$class, ">", sorted_p[[18]]$feature, "</p> * <span>", sorted_p[[18]]$weight, "</span>)",
       " - (<p class=", sorted_n[[1]]$class, ">", sorted_n[[1]]$feature, "</p> * <span>", sorted_n[[1]]$weight, "</span>)",
       " - (<p class=", sorted_n[[2]]$class, ">", sorted_n[[2]]$feature, "</p> * <span>", sorted_n[[2]]$weight, "</span>)"
     ))
@@ -380,10 +365,10 @@ function(input, output, session) {
   
   # Tool tips
   ## RI reset button
-  addTooltip(session, id = "ri_reset", title = "Reset weights back to CP&P Recommendation",
+  addTooltip(session, id = "ri_reset", title = "Reset values back to CP&P Recommendation",
              placement = "top", trigger = "hover")
   ## RI update button
-  addTooltip(session, id = "ri_update", title = "Update RI using new weights",
+  addTooltip(session, id = "ri_update", title = "Update scores using new values",
              placement = "top", trigger = "hover")
   ## info button
   addTooltip(session, id = "info", title = "View PowerPoint",

@@ -10,7 +10,7 @@ fluidPage(
       # Sidebar header
         sidebarPanel(class="ri-builder",
           fluidRow(class="ri-header", 
-            column(11, h2(class="ri-title", tags$img(class="logo", src = "ncc_logo.png", width = "8%"), HTML("RESILIENCE INDEX <span>BUILDER<span/>"))),
+            column(11, h2(class="ri-title", tags$img(class="logo", src = "ncc_logo.png", width = "8%"), HTML("LANDSCAPE RESILIENCE <span>BUILDER<span/>"))),
             column(1, actionButton(class="info-btn", inputId="info", label="", icon = icon('info')))
           ),
           
@@ -25,46 +25,40 @@ fluidPage(
           ),
           fluidRow(
             column(4,  numericInput("sar_rich", label = a("Species at Risk, Richness", href=sar_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(4,  numericInput("end_rich", label = a("Endemic Species, Richness", href=sar_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(4,  numericInput("biod_rich", label = a("Common Species, Richness ", href=sar_link, target="_blank"), value = 1, min = 0, max = 50))
+            column(4,  numericInput("end_rich", label = "Endemic Species, Richness", value = 1, min = 0, max = 50)),
+            column(4,  numericInput("biod_rich", label = "Common Species, Richness", value = 1, min = 0, max = 50))
           ),
           fluidRow(
             column(4,  numericInput("sar_goal", label = a("Species at Risk, Goal", href=sar_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(4,  numericInput("end_goal", label = a("Endemic Species, Goal", href=sar_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(4,  numericInput("biod_goal", label = a("Common Species, Goal", href=sar_link, target="_blank"), value = 1, min = 0, max = 50))
+            column(4,  numericInput("end_goal", "Endemic Species, Goal", value = 1, min = 0, max = 50)),
+            column(4,  numericInput("biod_goal", "Common Species, Goal", value = 1, min = 0, max = 50))
           )),
-          ## carbon
-          tags$div(class="theme carbon",
-          h4("Carbon"),
-          fluidRow(
-            column(6,  numericInput("carbon_p", label = a("Potential", href=carbon_p_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(6,  numericInput("carbon_s", label = a("Storage", href=carbon_s_link, target="_blank"), value = 1, min = 0, max = 50))
-          )),
-          
-          ## climate / connectivity
+
+          ## connectivity / climate
           tags$div(class="theme",
           fluidRow(
-           column(8, h4("Climate")),
            column(4, h4("Connectivity")),
+           column(8, h4("Climate")),
            ),          
           
           tags$div(class="climate",
           fluidRow(
+            column(4,  numericInput("connect", label = a("Connectivity", href=connect_link, target="_blank"), value = 1, min = 0, max = 50)),
             column(4,  numericInput("climate_r", label = a("Refugia", href=climate_r_link, target="_blank"),  value = 1, min = 0, max = 50)), 
-            column(4,  numericInput("climate_c", label = a("Centrality", href=climate_v_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(4,  numericInput("connect", label = a("Connectivity", href=connect_link, target="_blank"), value = 1, min = 0, max = 50))
+            column(4,  numericInput("climate_c", label = a("Centrality", href=climate_v_link, target="_blank"), value = 1, min = 0, max = 50))
           ))),
 
           ## habitat
           tags$div(class="theme habitat",
           h4("Habitat"),
           fluidRow(
-            column(3,  numericInput("forest", label = a("Forest", href=forest_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(3,  numericInput("grass", label = a("Grassland", href=grass_link, target="_blank"), value = 1, min = 0, max = 50)), 
-            column(2,  numericInput("wet", label = a("Wetland", href=wet_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(2,  numericInput("river", label = a("Rivers", href=wet_link, target="_blank"), value = 1, min = 0, max = 50)),
-            column(2,  numericInput("shore", label = a("Shoreline", href=wet_link, target="_blank"), value = 1, min = 0, max = 50)),
-          )),
+            column(6,  numericInput("forest", label = a("Forest", href=forest_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(6,  numericInput("grass", label = a("Grassland", href=grass_link, target="_blank"), value = 1, min = 0, max = 50))),
+          fluidRow(
+            column(4,  numericInput("wet", label = a("Wetland", href=wet_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(4,  numericInput("river", label = a("Rivers", href=riv_link, target="_blank"), value = 1, min = 0, max = 50)),
+            column(4,  numericInput("shore", label = a("Shoreline", href=shore_link, target="_blank"), value = 1, min = 0, max = 50))),
+          ),
           
           ## protection / threat
           tags$div(class="theme threat",
@@ -79,17 +73,19 @@ fluidPage(
            )),
           
           # Weight tally
-          tags$div(class="ri-weights",
-           fluidRow(
-             column(6, htmlOutput("pos_weights")),
-             column(6, htmlOutput("neg_weights"))
-           ))),
+          # tags$div(class="ri-weights",
+          #  fluidRow(
+          #    column(6, htmlOutput("pos_weights")),
+          #    column(6, htmlOutput("neg_weights"))
+          #  ))
+          # CLOSE WEIGHT BUILDER
+          ),
           
           # Reset and update buttons
           tags$div(class="ri-btn",
           fluidRow(
-            column(4, actionButton("ri_reset", "RESET RI", width = "100%")),
-            column(8, actionButton("ri_update", "UPDATE RI", width = "100%"))
+            column(4, actionButton("ri_reset", "RESET VALUES", width = "100%")),
+            column(8, actionButton("ri_update", "UPDATE SCORES", width = "100%"))
           ))
           
         # CLOSE SIDEBAR PANNEL 
@@ -98,8 +94,8 @@ fluidPage(
         # MAIN PANEL
         mainPanel(
           # Info modal
-          bsModal(id="info-modal", title="RESILIENCE INDEX GUIDE", trigger="info", size = "large",
-            tags$iframe(style="height:600px; width:100%", src="RI_GUIDE.pdf")),
+          bsModal(id="info-modal", title="LANDSCAPE RESILIENCE", trigger="info", size = "large",
+            tags$iframe(style="height:600px; width:100%", src="LANDSCAPE_RESILIENCE.pdf")),
           
           # Map
           tags$div(class="map-container",
@@ -117,7 +113,7 @@ fluidPage(
           
           # Equation
           tags$div(class="equation",
-          h4("Resilience Index Equation:"),
+          h4("Landscape Resilience Score:"),
           fluidRow(htmlOutput("equation")))
           
         # CLOSE MAIN PANEL  

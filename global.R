@@ -22,8 +22,6 @@ biod_rich <- rast("data/_RIREADY/biod_rich.tif")  # BIOD richness
 sar_goal <- rast("data/_RIREADY/sar_goal.tif")    # SAR goal
 end_goal <- rast("data/_RIREADY/end_goal.tif")    # END goal
 biod_goal <- rast("data/_RIREADY/biod_goal.tif")  # BIOD goal
-carbon_p <-  rast("data/_RIREADY/carbon_p.tif")   # carbon potential
-carbon_s <-  rast("data/_RIREADY/carbon_s.tif")   # carbon storage
 climate_c <-  rast("data/_RIREADY/climate_c.tif") # climate centrality
 climate_e <-  rast("data/_RIREADY/climate_e.tif") # climate extremes
 climate_r <-  rast("data/_RIREADY/climate_r.tif") # climate refugia
@@ -36,17 +34,15 @@ pa <- rast("data/_RIREADY/pa.tif")                # existing conservation
 hfi <- rast("data/_RIREADY/hfi.tif")               # hfi
 
 # Rasters for Map
-RI <<- rast("data/_RI/RI.tif")
+RI <<- rast("data/_RI/LRScore.tif")
 kba_map <- rast("data/National/Biodiversity/W_Key_biodiversity_areas.tif") * 100  # key biodiversity areas
 ch_map <- rast("data/National/Biodiversity/ECCC_CH_ALL_HA_SUM0.tif")        # critical habitat
 sar_rich_map <- rast("data/National/Biodiversity/ECCC_SAR_SUM_N.tif")       # SAR richness
 end_rich_map <- rast("data/National/Biodiversity/NSC_END_SUM_N.tif")        # END richness
 biod_rich_map <- rast("data/National/Biodiversity/BIOD_N.tif")          # BIOD richness
-sar_goal_map <- rast("data/National/Biodiversity/ECCC_SAR_MEAN.tif")               # SAR goal
-end_goal_map <- rast("data/National/Biodiversity/NSC_END_MEAN.tif")         # END goal
-biod_goal_map <- rast("data/National/Biodiversity/BIOD_MEAN.tif")           # BIOD goal
-carbon_p_map <-  rast("data/National/Carbon/W_Carbon_potential.tif")        # carbon potential
-carbon_s_map <-  rast("data/National/Carbon/W_Carbon_storage.tif")          # carbon storage
+sar_goal_map <- sar_goal        # SAR goal
+end_goal_map <- end_goal        # END goal
+biod_goal_map <- biod_goal      # BIOD goal
 climate_c_map <-  rast("data/National/Climate/W_Climate_shortest_path.tif") # climate centrality
 climate_e_map <-  rast("data/National/Climate/W_Climate_extremes.tif")      # climate extremes
 climate_r_map <-  rast("data/National/Climate/W_Climate_refugia.tif")       # climate refugia
@@ -55,14 +51,14 @@ forest_map <- rast("data/National/Habitat/T_LC_Forest-lc.tif")              # fo
 grass_map <- rast("data/National/Habitat/T_LC_Grassland.tif")               # grassland
 wet_map <- rast("data/National/Habitat/T_LC_Wetlands.tif")                  # wetland
 river_map <- rast("data/National/Habitat/T_KM_River_length.tif")            # rivers
-river_map[river_map > 10] <- 10
+river_map[river_map > 10] <- 10 # FOR DISPLAY PURPOSE
 hfi_map <- rast("data/National/Threats/W_Human_footprint.tif")               # hfi
 ## protection
 pa_map <- pa
-pa_map[pa_map== 0] <- NA 
+pa_map[pa_map== 0] <- NA # FOR DISPLAY PURPOSE
 
 # Weights excel
-weights_tbl <- read_xlsx("data/WEIGHTS.xlsx")
+weights_tbl <- read_xlsx("data/VALUES.xlsx")
 
 # Read in points
 pts <- read_sf("data/xy/points10km_RI.shp") %>%
@@ -79,11 +75,6 @@ pts_wgs <- st_transform(pts, crs = 4326) %>%
   ) 
 
 # Palettes for map
-## function for reversing palette
-lpal <- function(...) {
-  colorNumeric(..., reverse = TRUE)
-}
-
 ## RI
 RI_pal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent")
 RI_lpal <- colorNumeric(palette = "viridis", domain = c(0, 1), na.color = "transparent", reverse = TRUE)
@@ -136,23 +127,19 @@ biod_rich_lpal <- colorNumeric(
   reverse = TRUE
 )
 ## SAR goal
-mean_val <- terra::global(sar_goal_map, na.rm = TRUE, fun = "mean")[[1]]
-std_val <- terra::global(sar_goal_map, na.rm = TRUE, fun = "sd")[[1]]
-lower_bound <- mean_val - 2 * std_val
-upper_bound <- mean_val + 1 * std_val
-sar_goal_map[sar_goal_map>upper_bound] <- upper_bound
-sar_goal_map[sar_goal_map<lower_bound] <- lower_bound
 sar_goal_pal <- colorNumeric(
   palette = "RdPu", 
-  domain = c(0, upper_bound),
+  domain = c(min(sar_goal_map[], na.rm = TRUE), max(sar_goal_map[], na.rm = TRUE)),
   na.color = "transparent"
 )
 sar_goal_lpal <- colorNumeric(
   palette = "RdPu", 
-  domain = c(min(sar_goal_map[], na.rm = TRUE), 0.017792),
+  domain = c(min(sar_goal_map[], na.rm = TRUE), max(sar_goal_map[], na.rm = TRUE)),
   na.color = "transparent", 
   reverse = TRUE
 )
+
+
 ## END goal
 end_goal_pal <- colorNumeric(
   palette = "RdPu", 
@@ -175,30 +162,6 @@ biod_goal_lpal <- colorNumeric(
   palette = "RdPu", 
   domain = c(min(biod_goal_map[], na.rm = TRUE), max(biod_goal_map[], na.rm = TRUE)),
   na.color = "transparent", 
-  reverse = TRUE
-)
-## carbon potential
-carbon_p_pal <- colorNumeric(
-  palette = "YlOrBr", 
-  domain = c(min(carbon_p_map[], na.rm = TRUE), max(carbon_p_map[], na.rm = TRUE)), 
-  na.color = "transparent"
-)
-carbon_p_lpal <- colorNumeric(
-  palette = "YlOrBr", 
-  domain = c(min(carbon_p_map[], na.rm = TRUE), max(carbon_p_map[], na.rm = TRUE)), 
-  na.color = "transparent",
-  reverse = TRUE
-)
-## carbon storage
-carbon_s_pal <- colorNumeric(
-  palette = "YlOrBr", 
-  domain = c(min(carbon_s_map[], na.rm = TRUE), max(carbon_s_map[], na.rm = TRUE)), 
-  na.color = "transparent"
-)
-carbon_s_lpal <- colorNumeric(
-  palette = "YlOrBr", 
-  domain = c(min(carbon_s_map[], na.rm = TRUE), max(carbon_s_map[], na.rm = TRUE)), 
-  na.color = "transparent",
   reverse = TRUE
 )
 ## climate refugia
@@ -342,10 +305,8 @@ pa_link <<- "https://www.canada.ca/en/environment-climate-change/services/nation
 grass_link <<- "https://open.canada.ca/data/en/dataset/fa84a70f-03ad-4946-b0f8-a3b481dd5248"
 wet_link <<- "https://open.canada.ca/data/en/dataset/80aa8ec6-4947-48de-bc9c-7d09d48b4cad"
 forest_link <<- "https://opendata.nfis.org/mapserver/nfis-change_eng.html"
-freshwater_link <<- "https://iopscience.iop.org/article/10.1088/1748-9326/abc121"
-rec_link <<- "https://iopscience.iop.org/article/10.1088/1748-9326/abc121"
-carbon_s_link <<- "https://iopscience.iop.org/article/10.1088/1748-9326/abc121"
-carbon_p_link <<- "https://open.canada.ca/data/en/dataset/ec9e2659-1c29-4ddb-87a2-6aced147a990"
+riv_link <<- "https://open.canada.ca/data/en/dataset/9d96e8c9-22fe-4ad2-b5e8-94a6991b744b"
+shore_link <<- "https://open.canada.ca/data/en/dataset/80aa8ec6-4947-48de-bc9c-7d09d48b4cad"
 hfi_link <<- "https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP2/EVKAVL"
 kba_link <<- "https://ibacanada.com/explore_how.jsp?lang=EN"
 connect_link <<- "https://osf.io/z2qs3/"
