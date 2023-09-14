@@ -273,12 +273,12 @@ hfi_lpal <- colorNumeric(
 )
 ## protected
 pa_pal <- colorNumeric(
-  palette = "BuGn", 
+  palette = c("#78c679", "#41ab5d", "#238443", "#005a32"), 
   domain = c(min(pa_map[], na.rm = TRUE), max(pa_map[], na.rm = TRUE)), 
   na.color = "transparent"
 )
 pa_lpal <- colorNumeric(
-  palette = "BuGn", 
+  palette = c("#78c679", "#41ab5d", "#238443", "#005a32"), 
   domain = c(min(pa_map[], na.rm = TRUE), max(pa_map[], na.rm = TRUE)),
   na.color = "transparent", 
   reverse = TRUE
