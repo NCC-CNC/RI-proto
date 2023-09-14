@@ -34,7 +34,6 @@ pa <- rast("data/_RIREADY/pa.tif")                # existing conservation
 hfi <- rast("data/_RIREADY/hfi.tif")               # hfi
 
 # Rasters for Map
-RI <<- rast("data/_RI/LRScore.tif")
 kba_map <- rast("data/National/Biodiversity/W_Key_biodiversity_areas.tif") * 100  # key biodiversity areas
 ch_map <- rast("data/National/Biodiversity/ECCC_CH_ALL_HA_SUM0.tif")        # critical habitat
 sar_rich_map <- rast("data/National/Biodiversity/ECCC_SAR_SUM_N.tif")       # SAR richness

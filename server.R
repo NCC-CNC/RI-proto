@@ -1,6 +1,8 @@
 # SERVER.R
 function(input, output, session) {
   
+  RI <- rast("data/_RI/LRScore.tif")
+  
   # Layer cache (for lazy loading)
   base_group_cache <- list(
     (`Landscape Resilience` = c(TRUE, RI, RI_pal, RI_lpal, "Score")),
